@@ -216,26 +216,56 @@
             return JSON.parse(currentUser);
         }
         
-        // Render thành viên từ Firebase - ĐÃ SỬA ĐỂ HIỂN THỊ TẤT CẢ 46 THÀNH VIÊN
-        function renderMembersFromFirebase() {
+        // Render thành viên từ Firebase - ĐÃ SỬA
+        async function renderMembersFromFirebase() {
             const grid = document.getElementById('membersGrid');
             const noResults = document.getElementById('noResults');
             
-            db.ref('members').once('value').then(snapshot => {
-                const members = snapshot.val() || {}; // Đảm bảo luôn là object
+            try {
+                const snapshot = await db.ref('members').once('value');
+                let members = snapshot.val();
                 
-                grid.innerHTML = ''; // Xóa hết nội dung cũ
-                
-                // Tạo đủ 46 thẻ, lấy dữ liệu từ Firebase nếu có, không thì dùng mặc định
-                for (let i = 1; i <= 46; i++) {
-                    const memberId = i.toString().padStart(2, '0');
-                    const firebaseData = members[memberId] || {}; // Lấy data từ Firebase hoặc object rỗng
-                    const card = createMemberCard(memberId, firebaseData);
-                    grid.appendChild(card);
+                // Nếu chưa có dữ liệu, tạo 46 thành viên mặc định và lưu vào Firebase
+                if (!members) {
+                    console.log('Chưa có dữ liệu, đang tạo 46 thành viên mặc định...');
+                    const defaultMembers = {};
+                    
+                    for (let i = 1; i <= 46; i++) {
+                        const memberId = i.toString().padStart(2, '0');
+                        defaultMembers[memberId] = {
+                            name: memberNames[i - 1],
+                            bio: 'Thành viên A5K60',
+                            avatar: generateAvatar(memberId),
+                            joinDate: '2024-01-15',
+                            personalInfo: 'Thành viên tuyệt vời của nhóm A5K60',
+                            hobbies: ['Âm nhạc', 'Du lịch', 'Nhiếp ảnh'],
+                            favoriteQuote: '"Life is what happens when you\'re busy making other plans."',
+                            socialLinks: { facebook: '', instagram: '', locket: '' },
+                            media: []
+                        };
+                    }
+                    
+                    // Lưu vào Firebase
+                    await db.ref('members').set(defaultMembers);
+                    members = defaultMembers;
+                    console.log('Đã tạo và lưu 46 thành viên vào Firebase!');
                 }
                 
+                // Render từ Firebase
+                grid.innerHTML = '';
+                const memberIds = Object.keys(members).sort((a, b) => parseInt(a) - parseInt(b));
+                
+                memberIds.forEach(memberId => {
+                    const card = createMemberCard(memberId, members[memberId]);
+                    grid.appendChild(card);
+                });
+                
                 noResults.classList.add('hidden');
-            });
+                
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+                alert('Không thể tải dữ liệu thành viên. Vui lòng kiểm tra kết nối Firebase.');
+            }
         }
         
         // Lắng nghe thay đổi real-time
@@ -320,14 +350,16 @@
         }
         
         // Khởi tạo khi trang load
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const currentUser = checkAuth();
             if (!currentUser) return;
             
             document.getElementById('userGreeting').textContent = 
                 currentUser.role === 'admin' ? 'Admin' : `Member ${currentUser.memberId}`;
             
-            renderMembersFromFirebase();
+            // Tải và render dữ liệu
+            await renderMembersFromFirebase();
+            
             setupRealtimeListener();
             setupSearch();
             setupFilter();
