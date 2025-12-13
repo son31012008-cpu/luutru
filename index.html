@@ -32,9 +32,36 @@
         .member-number { position: absolute; top: 1rem; right: 1rem; background: #E17055; color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.875rem; }
         .logout-btn { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
         .logout-btn:hover { background: #e74c3c; color: white; }
-        /* Thêm style cho loading */
-        .loading { display: flex; justify-content: center; align-items: center; height: 200px; }
-        .loading::after { content: "Đang tải..."; color: #E17055; font-weight: bold; }
+        
+        /* Notification Toast Styles */
+        .notification {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 20rem;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 1.7s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .notification.info { border-color: #3498db; }
+        .notification.success { border-color: #2ecc71; }
+        .notification.warning { border-color: #f39c12; }
+        .notification.error { border-color: #e74c3c; }
+        .notification-icon { margin-right: 0.75rem; font-size: 1.25rem; }
+        .notification-message { color: #2c3e50; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -57,6 +84,14 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Notification Toast -->
+    <div id="notification" class="notification hidden">
+        <div class="flex items-center">
+            <div id="notificationIcon" class="notification-icon"></div>
+            <div id="notificationMessage" class="notification-message"></div>
+        </div>
+    </div>
     
     <!-- Main Content -->
     <main class="pt-20 px-4 pb-8">
@@ -85,11 +120,6 @@
                     </div>
                 </div>
             </section>
-            
-            <!-- Debug Info -->
-            <div id="debugInfo" class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800 hidden">
-                <strong>Debug:</strong> <span id="debugMessage"></span>
-            </div>
             
             <!-- Search and Filter -->
             <div class="mb-8">
@@ -123,11 +153,8 @@
                 </div>
             </div>
             
-            <!-- Loading State -->
-            <div id="loadingState" class="loading"></div>
-            
             <!-- Members Grid -->
-            <div id="membersGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 hidden">
+            <div id="membersGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
                 <!-- Members will be populated by Firebase -->
             </div>
             
@@ -154,15 +181,6 @@
             "Trần Ngọc Huyền Trân", "Lê Nguyễn Khánh Triều", "Lê Ngọc Thanh Trúc", "Lê Võ Anh Tuấn", "Lê Thanh Tuyến",
             "Nguyễn Hà Vy"
         ];
-
-        // Debug function
-        function showDebug(message) {
-            console.log('DEBUG:', message);
-            const debugEl = document.getElementById('debugInfo');
-            const debugMsg = document.getElementById('debugMessage');
-            debugMsg.textContent = message;
-            debugEl.classList.remove('hidden');
-        }
 
         // Tạo thẻ thành viên
         function createMemberCard(memberId, userData) {
@@ -195,7 +213,7 @@
                 
                 // Kiểm tra quyền truy cập: chỉ admin hoặc chính chủ
                 if (currentUser.role !== 'admin' && currentUser.memberId !== memberId) {
-                    alert('Bạn chỉ có thể xem trang cá nhân của chính mình!');
+                    showNotification('Bạn chỉ có thể xem trang cá nhân của chính mình!', 'warning');
                     return;
                 }
                 
@@ -211,7 +229,49 @@
             return emojis[parseInt(id) % 6];
         }
         
-        // Firebase config của bạn
+        // Hàm hiển thị thông báo tự động ẩn sau 2 giây
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationIcon = document.getElementById('notificationIcon');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            // Set icon based on type
+            const icons = {
+                info: 'ℹ️',
+                success: '✅',
+                warning: '⚠️',
+                error: '❌'
+            };
+            notificationIcon.textContent = icons[type] || icons.info;
+            
+            // Set message
+            notificationMessage.textContent = message;
+            
+            // Set border color based on type
+            notification.className = `notification fixed top-20 right-4 bg-white border-l-4 p-4 rounded-lg shadow-lg z-50`;
+            
+            if (type === 'error') {
+                notification.classList.add('border-red-500');
+            } else if (type === 'success') {
+                notification.classList.add('border-green-500');
+            } else if (type === 'warning') {
+                notification.classList.add('border-yellow-500');
+            } else {
+                notification.classList.add('border-blue-500');
+            }
+            
+            // Show notification
+            notification.classList.remove('hidden');
+            
+            // Auto-hide after 2 seconds
+            setTimeout(() => {
+                notification.classList.add('hidden');
+                // Reset classes
+                notification.className = 'notification fixed top-20 right-4 bg-white border-l-4 p-4 rounded-lg shadow-lg z-50 hidden';
+            }, 2000);
+        }
+        
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
@@ -238,30 +298,17 @@
         // Render thành viên từ Firebase
         async function renderMembersFromFirebase() {
             const grid = document.getElementById('membersGrid');
-            const loading = document.getElementById('loadingState');
-            const noResults = document.getElementById('noResults');
             
             try {
-                console.log('Bắt đầu tải dữ liệu từ Firebase...');
-                showDebug('Đang kết nối Firebase...');
-                
                 const snapshot = await db.ref('users').once('value');
                 const users = snapshot.val();
                 
-                console.log('Dữ liệu từ Firebase:', users);
-                showDebug('Đã nhận dữ liệu: ' + (users ? Object.keys(users).length + ' users' : 'NULL'));
-                
                 if (!users) {
-                    throw new Error('Không tìm thấy collection "users" trong Firebase');
+                    throw new Error('Không tìm thấy dữ liệu users trong Firebase');
                 }
-                
-                loading.classList.add('hidden');
                 
                 // Render chỉ các member 01-46, bỏ qua admin
                 const userIds = Object.keys(users).filter(id => id !== 'admin').sort((a, b) => parseInt(a) - parseInt(b));
-                
-                console.log('Member IDs để render:', userIds);
-                showDebug('Rendering ' + userIds.length + ' thành viên...');
                 
                 grid.innerHTML = '';
                 
@@ -271,17 +318,9 @@
                     grid.appendChild(card);
                 });
                 
-                grid.classList.remove('hidden');
-                noResults.classList.add('hidden');
-                
-                showDebug('Hoàn thành render!');
-                
             } catch (error) {
                 console.error('Lỗi khi tải dữ liệu:', error);
-                showDebug('LỖI: ' + error.message);
-                loading.classList.add('hidden');
-                noResults.classList.remove('hidden');
-                document.getElementById('noResults').querySelector('p').textContent = 'Lỗi: ' + error.message;
+                showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
             }
         }
         
@@ -291,7 +330,6 @@
                 const memberId = snapshot.key;
                 const data = snapshot.val();
                 
-                // Bỏ qua admin
                 if (memberId === 'admin') return;
                 
                 const card = document.querySelector(`[data-member-id="${memberId}"]`);
@@ -376,7 +414,6 @@
             document.getElementById('userGreeting').textContent = 
                 currentUser.role === 'admin' ? 'Admin' : `Member ${currentUser.memberId}`;
             
-            // Tải và render dữ liệu
             await renderMembersFromFirebase();
             
             setupRealtimeListener();
