@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Những con khỉ A5K60 - Trang chủ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js "></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js "></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js "></script>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com ">
+    <link rel="preconnect" href="https://fonts.gstatic.com " crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300 ;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         * { font-family: 'Inter', 'Poppins', sans-serif; }
@@ -167,22 +167,24 @@
                 </div>
             `;
             
-           card.addEventListener('click', () => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    if (!currentUser) {
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    // Kiểm tra quyền truy cập: chỉ admin hoặc chính chủ mới được vào
-    if (currentUser.role !== 'admin' && currentUser.memberId !== memberId) {
-        alert('Bạn chỉ có thể xem trang cá nhân của chính mình!');
-        return; // Ngăn chuyển hướng
-    }
-    
-    localStorage.setItem('selectedMember', memberId);
-    window.location.href = 'profile.html';
-});
+            card.addEventListener('click', () => {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                // Kiểm tra quyền truy cập: chỉ admin hoặc chính chủ
+                if (currentUser.role !== 'admin' && currentUser.memberId !== memberId) {
+                    alert('Bạn chỉ có thể xem trang cá nhân của chính mình!');
+                    return;
+                }
+                
+                localStorage.setItem('selectedMember', memberId);
+                window.location.href = 'profile.html';
+            });
+            
+            return card;
         }
         
         function generateAvatar(id) {
@@ -194,7 +196,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
-            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
+            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app ",
             projectId: "a5k60-website",
             storageBucket: "a5k60-website.firebasestorage.app",
             messagingSenderId: "1083754554024",
@@ -214,29 +216,23 @@
             return JSON.parse(currentUser);
         }
         
-        // Render thành viên từ Firebase
+        // Render thành viên từ Firebase - ĐÃ SỬA ĐỂ HIỂN THỊ TẤT CẢ 46 THÀNH VIÊN
         function renderMembersFromFirebase() {
             const grid = document.getElementById('membersGrid');
             const noResults = document.getElementById('noResults');
             
             db.ref('members').once('value').then(snapshot => {
-                const members = snapshot.val();
+                const members = snapshot.val() || {}; // Đảm bảo luôn là object
                 
-                if (!members) {
-                    // Nếu chưa có dữ liệu, tạo mặc định
-                    for (let i = 1; i <= 46; i++) {
-                        const memberId = i.toString().padStart(2, '0');
-                        const card = createMemberCard(memberId, {});
-                        grid.appendChild(card);
-                    }
-                    return;
-                }
+                grid.innerHTML = ''; // Xóa hết nội dung cũ
                 
-                grid.innerHTML = '';
-                Object.keys(members).sort().forEach(memberId => {
-                    const card = createMemberCard(memberId, members[memberId]);
+                // Tạo đủ 46 thẻ, lấy dữ liệu từ Firebase nếu có, không thì dùng mặc định
+                for (let i = 1; i <= 46; i++) {
+                    const memberId = i.toString().padStart(2, '0');
+                    const firebaseData = members[memberId] || {}; // Lấy data từ Firebase hoặc object rỗng
+                    const card = createMemberCard(memberId, firebaseData);
                     grid.appendChild(card);
-                });
+                }
                 
                 noResults.classList.add('hidden');
             });
