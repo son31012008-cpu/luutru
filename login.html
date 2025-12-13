@@ -136,16 +136,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
-        /* Thêm cho dropdown */
-        .custom-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -177,7 +167,7 @@
                     type="text" 
                     id="username" 
                     name="username"
-                    placeholder="username"
+                    placeholder="name"
                     class="form-input w-full px-4 py-3 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none"
                     required
                 >
@@ -209,11 +199,15 @@
             </button>
         </form>
         
-        
+        <div class="mt-6 text-center">
+            <p class="text-xs text-gray-500">
+                Tài khoản: admin (pass: admin123) hoặc 01-46 (pass: user01-user46)
+            </p>
+        </div>
     </div>
     
     <script>
-        // Firebase Config (THÊM VÀO ĐẦU)
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
@@ -228,86 +222,19 @@
         const db = firebase.database();
         console.log('🔥 Firebase đã kết nối!');
         
-        // Danh sách 46 thành viên
-        const memberNames = [
-            "Võ Đăng Hoàng Anh", "Võ Hoàng Anh", "Đinh Viết Dũng", "Lê Thị Thùy Dương", "Nguyễn Hàn Giang",
-            "Nguyễn Thị Diễm Hằng", "Nguyễn Thị Thúy Hằng", "Nguyễn Bảo Hoàng", "Nguyễn Văn Quốc Hội", "Huỳnh Gia Huy",
-            "Trần Huy Hoàng", "Hồ Công Hưng", "Nguyễn Anh Kha", "Lê Quang Khoa", "Nguyễn Anh Khôi",
-            "Mai Đăng Linh", "Nguyễn Hoài Phương Linh", "Nguyễn Thị Khánh Linh", "Nguyễn Thảo Ly", "Nguyễn Ngọc Huy Minh",
-            "Võ Khánh Minh", "Lê Thị Trà My", "Nguyễn Diễm My", "Võ Trần Thục Nghi", "Lê Hữu Nghĩa",
-            "Nguyễn Bích Ngọc", "Trần Thị Thanh Ngọc", "Nguyễn Đăng Nguyên", "Nguyễn Xuân Hoàng Nguyên", "Phạm Hoàng Thảo Nguyên",
-            "Lê Minh Nhật", "Nguyễn Thị Quỳnh Như", "Đặng Thành Phát", "Lê Ngọc Quang", "Trương Nhật Sơn",
-            "Nguyễn Thái Sơn", "Vũ Minh Sơn", "Nguyễn Quang Thanh", "Trần Hương Trà", "Nguyễn Ngọc Thảo Trang",
-            "Trần Ngọc Huyền Trân", "Lê Nguyễn Khánh Triều", "Lê Ngọc Thanh Trúc", "Lê Võ Anh Tuấn", "Lê Thanh Tuyến",
-            "Nguyễn Hà Vy"
-        ];
-        
-        // Thay thế input bằng dropdown
-        document.addEventListener('DOMContentLoaded', function() {
-            const usernameInput = document.getElementById('username');
-            const select = document.createElement('select');
-            select.id = 'username';
-            select.name = 'username';
-            select.className = usernameInput.className + ' custom-select';
-            select.required = true;
-            
-            // Thêm option admin
-            const adminOption = document.createElement('option');
-            adminOption.value = '';
-            adminOption.textContent = '-- Chọn tài khoản --';
-            select.appendChild(adminOption);
-            
-            const adminOpt = document.createElement('option');
-            adminOpt.value = 'admin';
-            adminOpt.textContent = '👨‍💼 Administrator';
-            select.appendChild(adminOpt);
-            
-            // Thêm separator
-            const sep = document.createElement('option');
-            sep.disabled = true;
-            sep.textContent = '─────────────────────';
-            select.appendChild(sep);
-            
-            // Thêm 46 thành viên
-            const avatars = ['🐵', '🙈', '🙉', '🙊', '🦍', '🐒'];
-            for (let i = 1; i <= 46; i++) {
-                const id = i.toString().padStart(2, '0');
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = `${avatars[i % 6]} ${memberNames[i-1]} (${id})`;
-                select.appendChild(option);
-            }
-            
-            usernameInput.replaceWith(select);
-            
-            // Auto-fill password
-            select.addEventListener('change', (e) => {
-                const passwordInput = document.getElementById('password');
-                if (e.target.value && e.target.value !== 'admin') {
-                    passwordInput.value = `user${e.target.value}`;
-                } else if (e.target.value === 'admin') {
-                    passwordInput.value = 'admin123';
-                } else {
-                    passwordInput.value = '';
-                }
-            });
-            
-            // Focus vào select
-            setTimeout(() => select.focus(), 500);
-        });
-        
         // Xử lý đăng nhập qua Firebase
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             
             errorMessage.classList.remove('show');
             
+            // Validation
             if (!username) {
-                errorMessage.textContent = '❌ Vui lòng chọn tài khoản!';
+                errorMessage.textContent = '❌ Vui lòng nhập tài khoản!';
                 errorMessage.classList.add('show');
                 return;
             }
@@ -326,6 +253,14 @@
                 if (!userData) {
                     errorMessage.textContent = '❌ Tài khoản không tồn tại!';
                     errorMessage.classList.add('show');
+                    
+                    // Shake effect
+                    anime({
+                        targets: '.login-container',
+                        translateX: [0, -10, 10, -10, 10, 0],
+                        duration: 500
+                    });
+                    
                     return;
                 }
                 
@@ -333,7 +268,6 @@
                     errorMessage.textContent = '❌ Mật khẩu không đúng!';
                     errorMessage.classList.add('show');
                     
-                    // Shake effect
                     anime({
                         targets: '.login-container',
                         translateX: [0, -10, 10, -10, 10, 0],
@@ -354,7 +288,7 @@
                 
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 
-                // Thông báo thành công
+                // Success animation
                 anime({
                     targets: '.login-container',
                     scale: [1, 0.95],
