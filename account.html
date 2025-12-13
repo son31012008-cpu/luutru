@@ -231,9 +231,15 @@
                 showNotification('Đang gửi email xác thực...', 'info');
                 
                 // Tạo action code settings cho Firebase
-                const actionCodeSettings = {
-                    url: window.location.origin + '/account.html?verified=true',
-                    handleCodeInApp: true
+                // Tìm đoạn này và thay thế
+const actionCodeSettings = {
+    url: window.location.origin + '/account.html?verified=true',
+    handleCodeInApp: true,
+    // Thêm cấu hình này để tránh lỗi domain
+    dynamicLinkDomain: undefined,
+    iOS: { bundleId: undefined },
+    android: { packageName: undefined, installApp: false, minimumVersion: null }
+};
                 };
                 
                 // Lưu email vào localStorage để xác thực sau
