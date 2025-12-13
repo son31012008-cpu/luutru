@@ -3,203 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Những con khỉ A5K60 - Trang cá nhân</title>
+    <title>A5K60 - Trang cá nhân</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', 'Poppins', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%);
-            min-height: 100vh;
-        }
-        
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .profile-header {
-            background: linear-gradient(135deg, rgba(225, 112, 85, 0.1) 0%, rgba(116, 185, 255, 0.1) 100%);
-            border-radius: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #E17055 0%, #D63031 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            margin: 0 auto 1rem;
-            border: 4px solid white;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .content-section {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .content-section:hover {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .social-link {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .social-link:hover {
-            background: rgba(255, 255, 255, 1);
-            border-color: #E17055;
-            transform: translateY(-2px);
-        }
-        
-        .upload-btn {
-            background: linear-gradient(135deg, #E17055 0%, #D63031 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(225, 112, 85, 0.3);
-        }
-        
-        .media-item {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .media-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .modal {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-        }
-        
-        .modal-content {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .form-input {
-            background: rgba(250, 247, 240, 0.8);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .form-input:focus {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: #E17055;
-            box-shadow: 0 0 0 4px rgba(225, 112, 85, 0.1);
-        }
-        
-        .back-btn {
-            background: rgba(52, 152, 219, 0.1);
-            color: #3498db;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: #3498db;
-            color: white;
-        }
-        
-        .splide__arrow {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .splide__arrow svg {
-            fill: #E17055;
-        }
-        
-        .splide__pagination__page.is-active {
-            background: #E17055;
-        }
-        
-        .floating-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .shape {
-            position: absolute;
-            opacity: 0.1;
-            animation: float 8s ease-in-out infinite;
-        }
-        
-        .shape:nth-child(1) {
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-        
-        .shape:nth-child(2) {
-            top: 60%;
-            right: 15%;
-            animation-delay: 3s;
-        }
-        
-        .shape:nth-child(3) {
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 6s;
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-30px) rotate(180deg);
-            }
-        }
-        
-        .edit-btn {
-            background: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .edit-btn:hover {
-            background: #2ecc71;
-            color: white;
-        }
+        * { font-family: 'Inter', 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%); min-height: 100vh; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .profile-header { background: linear-gradient(135deg, rgba(225, 112, 85, 0.1) 0%, rgba(116, 185, 255, 0.1) 100%); border-radius: 2rem; }
+        .profile-avatar { width: 120px; height: 120px; background: linear-gradient(135deg, #E17055 0%, #D63031 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; margin: 0 auto 1rem; border: 4px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); cursor: pointer; }
+        .content-section { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; }
+        .content-section:hover { background: rgba(255, 255, 255, 0.95); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        .social-link { background: rgba(255, 255, 255, 0.8); border: 2px solid transparent; transition: all 0.3s ease; }
+        .social-link:hover { background: rgba(255, 255, 255, 1); border-color: #E17055; transform: translateY(-2px); }
+        .upload-btn { background: linear-gradient(135deg, #E17055 0%, #D63031 100%); transition: all 0.3s ease; }
+        .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(225, 112, 85, 0.3); }
+        .media-item { background: rgba(255, 255, 255, 0.8); border-radius: 1rem; overflow: hidden; transition: all 0.3s ease; cursor: pointer; }
+        .media-item:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
+        .modal { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); }
+        .modal-content { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .form-input { background: rgba(250, 247, 240, 0.8); border: 2px solid transparent; transition: all 0.3s ease; }
+        .form-input:focus { background: rgba(255, 255, 255, 0.9); border-color: #E17055; box-shadow: 0 0 0 4px rgba(225, 112, 85, 0.1); }
+        .form-input[readonly] { background: rgba(240, 240, 240, 0.5); cursor: not-allowed; }
+        .back-btn { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); transition: all 0.3s ease; }
+        .back-btn:hover { background: #3498db; color: white; }
+        .logout-btn { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
+        .logout-btn:hover { background: #e74c3c; color: white; }
+        .edit-btn { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); transition: all 0.3s ease; }
+        .save-btn { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3); }
+        .floating-shapes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .shape { position: absolute; opacity: 0.1; animation: float 8s ease-in-out infinite; }
+        .shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 60%; right: 15%; animation-delay: 3s; }
+        .shape:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 6s; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-30px) rotate(180deg); } }
     </style>
 </head>
 <body>
@@ -218,7 +63,7 @@
                 <div class="hidden md:block">
                     <span class="text-sm text-gray-600">Trang cá nhân</span>
                 </div>
-                <button id="logoutBtn" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg text-sm font-medium hover:bg-red-600 hover:text-white transition-all">
+                <button id="logoutBtn" class="logout-btn px-4 py-2 rounded-lg text-sm font-medium">
                     Đăng xuất
                 </button>
             </div>
@@ -237,11 +82,12 @@
                 </div>
                 
                 <div class="relative z-10">
-                    <div id="profileAvatar" class="profile-avatar">
+                    <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                    <div id="profileAvatar" class="profile-avatar" style="cursor: pointer;">
                         🐵
                     </div>
                     <h2 id="profileName" class="text-3xl font-bold text-gray-800 mb-2">
-                        Thành viên A5K60
+                        Đang tải...
                     </h2>
                     <p id="profileBio" class="text-lg text-gray-600 mb-4">
                         Thành viên đặc biệt của nhóm
@@ -265,7 +111,7 @@
                 <section class="content-section p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-800">🎭 Thông tin cá nhân</h3>
-                        <button id="editProfileBtn" class="edit-btn px-4 py-2 rounded-lg text-sm font-medium">
+                        <button id="toggleEditBtn" class="edit-btn px-4 py-2 rounded-lg text-sm font-medium">
                             Chỉnh sửa
                         </button>
                     </div>
@@ -275,21 +121,12 @@
                             <div id="currentAvatar" class="w-24 h-24 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4">
                                 🐵
                             </div>
-                            <button id="changeAvatarBtn" class="upload-btn px-4 py-2 text-white rounded-lg text-sm font-medium mb-4">
-                                Đổi avatar
-                            </button>
-                            <input type="file" id="avatarInput" accept="image/*" class="hidden">
                         </div>
                         
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tên hiển thị</label>
                                 <input type="text" id="displayName" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" readonly>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Ngày tham gia</label>
-                                <input type="date" id="joinDateInput" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" readonly>
                             </div>
                             
                             <div>
@@ -300,11 +137,8 @@
                     </div>
                     
                     <div id="profileActions" class="flex justify-end space-x-3 mt-6 hidden">
-                        <button id="cancelEditBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all">
-                            Hủy
-                        </button>
-                        <button id="saveProfileBtn" class="upload-btn px-4 py-2 text-white rounded-lg font-medium">
-                            Lưu
+                        <button id="saveProfileBtn" class="save-btn px-4 py-2 rounded-lg text-sm font-medium">
+                            💾 Lưu thay đổi
                         </button>
                     </div>
                 </section>
@@ -337,103 +171,100 @@
                 <section class="content-section p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-bold text-gray-800">🔗 Liên kết & Nhóm</h3>
-                        <div class="flex space-x-2">
-                            <button id="editLinksBtn" class="edit-btn px-3 py-2 rounded-lg text-sm font-medium">
-                                Sửa links
-                            </button>
-                            <button id="createGroupBtn" class="upload-btn px-3 py-2 text-white rounded-lg text-sm font-medium">
-                                + Tạo nhóm
-                            </button>
-                        </div>
+                        <button id="editLinksBtn" class="edit-btn px-3 py-2 rounded-lg text-sm font-medium">
+                            Sửa links
+                        </button>
                     </div>
                     
                     <!-- Social Links -->
                     <div class="space-y-4 mb-6">
                         <div class="social-link p-4 rounded-xl">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                    f
-                                </div>
+                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">f</div>
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-800">Facebook</div>
-                                    <div id="facebookLink" class="text-sm text-gray-500 truncate">
-                                        Chưa cập nhật
-                                    </div>
+                                    <div id="facebookLink" class="text-sm text-gray-500 truncate">Chưa cập nhật</div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="social-link p-4 rounded-xl">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                    📷
-                                </div>
+                                <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white font-bold">📷</div>
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-800">Instagram</div>
-                                    <div id="instagramLink" class="text-sm text-gray-500 truncate">
-                                        Chưa cập nhật
-                                    </div>
+                                    <div id="instagramLink" class="text-sm text-gray-500 truncate">Chưa cập nhật</div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="social-link p-4 rounded-xl">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                    🔒
-                                </div>
+                                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">🔒</div>
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-800">Locket</div>
-                                    <div id="locketLink" class="text-sm text-gray-500 truncate">
-                                        Chưa cập nhật
-                                    </div>
+                                    <div id="locketLink" class="text-sm text-gray-500 truncate">Chưa cập nhật</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
+                
+                <!-- Hobbies Section -->
+                <section class="content-section p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">❤️ Sở thích</h3>
+                        <button id="editHobbiesBtn" class="edit-btn px-3 py-2 rounded-lg text-sm font-medium">
+                            Sửa sở thích
+                        </button>
+                    </div>
                     
-                    <!-- Groups Section -->
-                    <div>
-                        <h4 class="font-semibold text-gray-700 mb-4">👥 Nhóm của tôi</h4>
-                        <div id="groupsList" class="space-y-3">
-                            <!-- Groups will be populated by JavaScript -->
+                    <div id="hobbiesContainer" class="flex flex-wrap gap-2">
+                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Âm nhạc</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Du lịch</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Nhiếp ảnh</span>
+                    </div>
+                    
+                    <div id="hobbiesEditSection" class="hidden mt-4">
+                        <input type="text" id="newHobbyInput" placeholder="Nhập sở thích mới..." class="form-input w-full px-4 py-3 rounded-xl mb-3">
+                        <div class="flex space-x-2">
+                            <button id="addHobbyBtn" class="upload-btn px-4 py-2 text-white rounded-lg text-sm">+ Thêm</button>
+                            <button id="saveHobbiesBtn" class="save-btn px-4 py-2 rounded-lg text-sm font-medium">Lưu</button>
                         </div>
-                        <div id="noGroups" class="text-center py-4 text-gray-500">
-                            Chưa tham gia nhóm nào
+                    </div>
+                </section>
+                
+                <!-- Personal Info -->
+                <section class="content-section p-6 mt-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">ℹ️ Thông tin cá nhân</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-3">Giới thiệu</h4>
+                            <p id="personalInfo" class="text-gray-600 leading-relaxed">
+                                Thành viên tuyệt vời của nhóm A5K60. Luôn mang đến năng lượng tích cực và niềm vui cho mọi người xung quanh.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-3">Câu nói yêu thích</h4>
+                            <p id="favoriteQuote" class="text-gray-600 italic">
+                                "Life is what happens when you're busy making other plans."
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button id="editQuoteBtn" class="edit-btn px-4 py-2 rounded-lg text-sm font-medium">
+                            Sửa câu nói yêu thích
+                        </button>
+                        <div id="quoteEditSection" class="hidden mt-4">
+                            <textarea id="quoteInput" rows="3" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Nhập câu nói yêu thích..."></textarea>
+                            <button id="saveQuoteBtn" class="save-btn mt-3 px-4 py-2 rounded-lg text-sm font-medium">Lưu</button>
                         </div>
                     </div>
                 </section>
             </div>
-            
-            <!-- Personal Info -->
-            <section class="content-section p-6 mt-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">ℹ️ Thông tin cá nhân</h3>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold text-gray-700 mb-3">Giới thiệu</h4>
-                        <p id="personalInfo" class="text-gray-600 leading-relaxed">
-                            Thành viên tuyệt vờ của nhóm A5K60. Luôn mang đến năng lượng tích cực và niềm vui cho mọi người xung quanh.
-                        </p>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold text-gray-700 mb-3">Sở thích</h4>
-                        <div id="hobbies" class="flex flex-wrap gap-2">
-                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Âm nhạc</span>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Du lịch</span>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Nhiếp ảnh</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 p-4 bg-gray-50 rounded-xl">
-                    <h4 class="font-semibold text-gray-700 mb-2">Câu nói yêu thích</h4>
-                    <p id="favoriteQuote" class="text-gray-600 italic">
-                        "Life is what happens when you're busy making other plans."
-                    </p>
-                </div>
-            </section>
         </div>
     </main>
     
@@ -452,11 +283,6 @@
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Ngày tham gia</label>
-                    <input type="date" id="editJoinDate" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" required>
-                </div>
-                
-                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
                     <textarea id="editBio" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none resize-none" rows="3"></textarea>
                 </div>
@@ -465,46 +291,8 @@
                     <button type="button" id="cancelEditProfile" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all">
                         Hủy
                     </button>
-                    <button type="submit" class="flex-1 upload-btn px-4 py-3 text-white rounded-xl font-medium">
-                        Lưu
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Create Group Modal -->
-    <div id="createGroupModal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-        <div class="modal-content rounded-2xl p-8 w-full max-w-md">
-            <div class="text-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800 mb-2">Tạo nhóm mới</h3>
-                <p class="text-gray-600">Tạo nhóm cho bạn và các thành viên khác</p>
-            </div>
-            
-            <form id="createGroupForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tên nhóm</label>
-                    <input type="text" id="groupName" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Nhập tên nhóm..." required>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
-                    <textarea id="groupDescription" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none resize-none" rows="3" placeholder="Mô tả về nhóm..."></textarea>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Thành viên (chọn từ danh sách)</label>
-                    <div id="memberSelection" class="max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
-                        <!-- Member checkboxes will be populated by JavaScript -->
-                    </div>
-                </div>
-                
-                <div class="flex space-x-3">
-                    <button type="button" id="cancelCreateGroup" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all">
-                        Hủy
-                    </button>
-                    <button type="submit" class="flex-1 upload-btn px-4 py-3 text-white rounded-xl font-medium">
-                        Tạo nhóm
+                    <button type="submit" class="flex-1 save-btn px-4 py-3 rounded-xl font-medium">
+                        💾 Lưu
                     </button>
                 </div>
             </form>
@@ -522,37 +310,19 @@
             <form id="uploadForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Chọn file</label>
-                    <input 
-                        type="file" 
-                        id="fileInput" 
-                        accept="image/*,video/*"
-                        class="form-input w-full px-4 py-3 rounded-xl focus:outline-none"
-                        multiple
-                    >
+                    <input type="file" id="fileInput" accept="image/*,video/*" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" multiple>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả</label>
-                    <textarea 
-                        id="fileDescription" 
-                        placeholder="Mô tả về file này..."
-                        class="form-input w-full px-4 py-3 rounded-xl focus:outline-none resize-none"
-                        rows="3"
-                    ></textarea>
+                    <textarea id="fileDescription" placeholder="Mô tả về file này..." class="form-input w-full px-4 py-3 rounded-xl focus:outline-none resize-none" rows="3"></textarea>
                 </div>
                 
                 <div class="flex space-x-3">
-                    <button 
-                        type="button" 
-                        id="cancelUpload" 
-                        class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all"
-                    >
+                    <button type="button" id="cancelUpload" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all">
                         Hủy
                     </button>
-                    <button 
-                        type="submit" 
-                        class="flex-1 upload-btn px-4 py-3 text-white rounded-xl font-medium"
-                    >
+                    <button type="submit" class="flex-1 upload-btn px-4 py-3 text-white rounded-xl font-medium">
                         Upload
                     </button>
                 </div>
@@ -571,47 +341,25 @@
             <form id="editLinksForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Facebook</label>
-                    <input 
-                        type="url" 
-                        id="facebookInput" 
-                        placeholder="https://facebook.com/yourprofile"
-                        class="form-input w-full px-4 py-3 rounded-xl focus:outline-none"
-                    >
+                    <input type="url" id="facebookInput" placeholder="https://facebook.com/yourprofile" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Instagram</label>
-                    <input 
-                        type="url" 
-                        id="instagramInput" 
-                        placeholder="https://instagram.com/yourprofile"
-                        class="form-input w-full px-4 py-3 rounded-xl focus:outline-none"
-                    >
+                    <input type="url" id="instagramInput" placeholder="https://instagram.com/yourprofile" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Locket</label>
-                    <input 
-                        type="url" 
-                        id="locketInput" 
-                        placeholder="https://locket.com/yourprofile"
-                        class="form-input w-full px-4 py-3 rounded-xl focus:outline-none"
-                    >
+                    <input type="url" id="locketInput" placeholder="https://locket.com/yourprofile" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none">
                 </div>
                 
                 <div class="flex space-x-3">
-                    <button 
-                        type="button" 
-                        id="cancelEditLinks" 
-                        class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all"
-                    >
+                    <button type="button" id="cancelEditLinks" class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-all">
                         Hủy
                     </button>
-                    <button 
-                        type="submit" 
-                        class="flex-1 edit-btn px-4 py-3 rounded-xl font-medium"
-                    >
-                        Lưu
+                    <button type="submit" class="flex-1 save-btn px-4 py-3 rounded-xl font-medium">
+                        💾 Lưu
                     </button>
                 </div>
             </form>
@@ -619,38 +367,37 @@
     </div>
     
     <script>
-        // Mock data
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
+            authDomain: "a5k60-website.firebaseapp.com",
+            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "a5k60-website",
+            storageBucket: "a5k60-website.firebasestorage.app",
+            messagingSenderId: "1083754554024",
+            appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        // Dữ liệu thành viên
         let memberData = {
             id: '01',
             name: 'Thành viên A5K60',
             avatar: '🐵',
             bio: 'Thành viên đặc biệt của nhóm',
             joinDate: '2024-01-15',
-            personalInfo: 'Thành viên tuyệt vờ của nhóm A5K60. Luôn mang đến năng lượng tích cực và niềm vui cho mọi người xung quanh.',
+            personalInfo: 'Thành viên tuyệt vời của nhóm A5K60. Luôn mang đến năng lượng tích cực và niềm vui cho mọi người xung quanh.',
             hobbies: ['Âm nhạc', 'Du lịch', 'Nhiếp ảnh'],
             favoriteQuote: '"Life is what happens when you\'re busy making other plans."',
-            socialLinks: {
-                facebook: '',
-                instagram: '',
-                locket: ''
-            },
-            media: [
-                {
-                    type: 'image',
-                    url: 'https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=Ảnh+1',
-                    description: 'Kỷ niệm đẹp'
-                },
-                {
-                    type: 'image',
-                    url: 'https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Ảnh+2',
-                    description: 'Khoảnh khắc vui vẻ'
-                }
-            ]
+            socialLinks: { facebook: '', instagram: '', locket: '' },
+            media: []
         };
         
         let splide;
+        let isEditMode = false;
         
-        // Check authentication
+        // Kiểm tra đăng nhập
         function checkAuth() {
             const currentUser = localStorage.getItem('currentUser');
             if (!currentUser) {
@@ -660,10 +407,11 @@
             return JSON.parse(currentUser);
         }
         
-        // Load member data
+        // Tải dữ liệu từ Firebase
         function loadMemberData() {
             const selectedMember = localStorage.getItem('selectedMember');
             const currentUser = checkAuth();
+            if (!currentUser) return;
             
             if (!selectedMember) {
                 alert('Vui lòng chọn thành viên từ trang chủ');
@@ -671,61 +419,67 @@
                 return;
             }
             
-            // Check permissions
+            // Kiểm tra quyền
             if (currentUser.role !== 'admin' && currentUser.memberId !== selectedMember) {
                 alert('Bạn chỉ có thể xem thông tin của chính mình!');
                 window.location.href = 'index.html';
                 return;
             }
             
-            // Mock member data based on ID
             memberData.id = selectedMember;
-            memberData.name = `Thành viên ${selectedMember}`;
-            memberData.joinDate = `2024-${Math.floor(Math.random() * 12 + 1).toString().padStart(2, '0')}-${Math.floor(Math.random() * 28 + 1).toString().padStart(2, '0')}`;
             
-            // Load from localStorage if exists
-            const savedData = localStorage.getItem(`member_${selectedMember}`);
-            if (savedData) {
-                memberData = { ...memberData, ...JSON.parse(savedData) };
-            }
-            
-            renderProfile();
+            db.ref(`members/${selectedMember}`).once('value').then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    memberData = { ...memberData, ...data };
+                }
+                renderProfile();
+            });
         }
         
-        // Render profile
+        // Hiển thị profile
         function renderProfile() {
-            document.getElementById('profileAvatar').textContent = memberData.avatar;
-            document.getElementById('profileName').textContent = memberData.name;
-            document.getElementById('profileBio').textContent = memberData.bio;
-            document.getElementById('memberNumber').textContent = memberData.id;
-            document.getElementById('joinDate').textContent = memberData.joinDate.split('-')[0];
+            document.getElementById('profileName').textContent = memberData.name || `Thành viên ${memberData.id}`;
+            document.getElementById('profileBio').textContent = memberData.bio || 'Thành viên A5K60';
             document.getElementById('personalInfo').textContent = memberData.personalInfo;
             document.getElementById('favoriteQuote').textContent = memberData.favoriteQuote;
+            document.getElementById('memberNumber').textContent = memberData.id;
+            document.getElementById('joinDate').textContent = memberData.joinDate.split('-')[0];
             
-            // Render hobbies
-            const hobbiesContainer = document.getElementById('hobbies');
-            hobbiesContainer.innerHTML = memberData.hobbies.map(hobby => 
-                `<span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">${hobby}</span>`
-            ).join('');
+            // Cập nhật form
+            document.getElementById('displayName').value = memberData.name;
+            document.getElementById('bioInput').value = memberData.bio;
             
-            // Render social links
-            document.getElementById('facebookLink').textContent = 
-                memberData.socialLinks.facebook || 'Chưa cập nhật';
-            document.getElementById('instagramLink').textContent = 
-                memberData.socialLinks.instagram || 'Chưa cập nhật';
-            document.getElementById('locketLink').textContent = 
-                memberData.socialLinks.locket || 'Chưa cập nhật';
+            // Avatar
+            document.getElementById('currentAvatar').textContent = memberData.avatar;
+            document.getElementById('profileAvatar').textContent = memberData.avatar;
             
-            // Render media gallery
+            // Social links
+            document.getElementById('facebookLink').textContent = memberData.socialLinks.facebook || 'Chưa cập nhật';
+            document.getElementById('instagramLink').textContent = memberData.socialLinks.instagram || 'Chưa cập nhật';
+            document.getElementById('locketLink').textContent = memberData.socialLinks.locket || 'Chưa cập nhật';
+            
+            // Hobbies
+            renderHobbies();
+            
+            // Media
             renderMediaGallery();
         }
         
-        // Render media gallery
+        // Hiển thị sở thích
+        function renderHobbies() {
+            const container = document.getElementById('hobbiesContainer');
+            container.innerHTML = memberData.hobbies.map(hobby => 
+                `<span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">${hobby}</span>`
+            ).join('');
+        }
+        
+        // Hiển thị media
         function renderMediaGallery() {
-            const mediaSlides = document.getElementById('mediaSlides');
+            const slides = document.getElementById('mediaSlides');
             const noMedia = document.getElementById('noMedia');
             
-            if (memberData.media.length === 0) {
+            if (!memberData.media || memberData.media.length === 0) {
                 document.getElementById('mediaGallery').style.display = 'none';
                 noMedia.classList.remove('hidden');
                 return;
@@ -734,13 +488,12 @@
             document.getElementById('mediaGallery').style.display = 'block';
             noMedia.classList.add('hidden');
             
-            mediaSlides.innerHTML = memberData.media.map((item, index) => `
+            slides.innerHTML = memberData.media.map(item => `
                 <li class="splide__slide">
                     <div class="media-item">
                         ${item.type === 'image' ? 
                             `<img src="${item.url}" alt="${item.description}" class="w-full h-48 object-cover">` :
-                            `<video src="${item.url}" controls class="w-full h-48 object-cover"></video>`
-                        }
+                            `<video src="${item.url}" controls class="w-full h-48 object-cover"></video>`}
                         <div class="p-4">
                             <p class="text-sm text-gray-600">${item.description}</p>
                         </div>
@@ -748,32 +501,26 @@
                 </li>
             `).join('');
             
-            // Initialize Splide
-            if (splide) {
-                splide.destroy();
-            }
-            
+            // Khởi tạo Splide
+            if (splide) splide.destroy();
             splide = new Splide('#mediaGallery', {
                 type: 'loop',
                 perPage: 1,
                 autoplay: true,
-                interval: 3000,
                 arrows: memberData.media.length > 1,
                 pagination: memberData.media.length > 1
             });
-            
             splide.mount();
         }
         
-        // Modal handlers
+        // Modal
         function showModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
             anime({
                 targets: `#${modalId} .modal-content`,
                 scale: [0.8, 1],
                 opacity: [0, 1],
-                duration: 300,
-                easing: 'easeOutQuad'
+                duration: 300
             });
         }
         
@@ -783,95 +530,104 @@
                 scale: [1, 0.8],
                 opacity: [1, 0],
                 duration: 200,
-                easing: 'easeInQuad',
-                complete: function() {
-                    document.getElementById(modalId).classList.add('hidden');
+                complete: () => document.getElementById(modalId).classList.add('hidden')
+            });
+        }
+        
+        // Lưu lên Firebase
+        async function saveToFirebase() {
+            try {
+                await db.ref(`members/${memberData.id}`).set(memberData);
+                localStorage.setItem(`member_${memberData.id}`, JSON.stringify(memberData));
+                
+                // Trigger sync cho index.html
+                window.dispatchEvent(new CustomEvent('memberUpdated', { detail: { memberId: memberData.id, data: memberData } }));
+                
+                alert('✅ Đã lưu và đồng bộ online!');
+            } catch (error) {
+                console.error('Lỗi Firebase:', error);
+                alert('❌ Lỗi đồng bộ, dữ liệu đã lưu offline');
+            }
+        }
+        
+        // Event listeners
+        function setupEventListeners() {
+            // Toggle edit mode
+            document.getElementById('toggleEditBtn').addEventListener('click', () => {
+                isEditMode = !isEditMode;
+                const btn = document.getElementById('toggleEditBtn');
+                const inputs = document.querySelectorAll('.form-input');
+                const actions = document.getElementById('profileActions');
+                
+                if (isEditMode) {
+                    btn.textContent = 'Hủy';
+                    btn.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-300 transition-all';
+                    inputs.forEach(input => input.removeAttribute('readonly'));
+                    actions.classList.remove('hidden');
+                } else {
+                    btn.textContent = 'Chỉnh sửa';
+                    btn.className = 'edit-btn px-4 py-2 rounded-lg text-sm font-medium';
+                    inputs.forEach(input => input.setAttribute('readonly', ''));
+                    actions.classList.add('hidden');
                 }
             });
-        }
-        
-        // Upload handler
-        function handleUpload(event) {
-            event.preventDefault();
             
-            const files = document.getElementById('fileInput').files;
-            const description = document.getElementById('fileDescription').value;
+            // Lưu profile
+            document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+                memberData.name = document.getElementById('displayName').value;
+                memberData.bio = document.getElementById('bioInput').value;
+                await saveToFirebase();
+                renderProfile();
+                isEditMode = false;
+                document.getElementById('profileActions').classList.add('hidden');
+            });
             
-            if (files.length === 0) {
-                alert('Vui lòng chọn file để upload!');
-                return;
-            }
+            // Avatar upload
+            document.getElementById('profileAvatar').addEventListener('click', () => {
+                if (!isEditMode) return;
+                document.getElementById('avatarInput').click();
+            });
             
-            // Simulate upload
-            Array.from(files).forEach(file => {
+            document.getElementById('avatarInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newMedia = {
-                        type: file.type.startsWith('image/') ? 'image' : 'video',
-                        url: e.target.result,
-                        description: description || file.name
-                    };
-                    
-                    memberData.media.push(newMedia);
-                    saveMemberData();
-                    renderMediaGallery();
+                reader.onload = (e) => {
+                    const newAvatar = `data:image/jpeg;base64,${btoa(e.target.result)}`;
+                    memberData.avatar = newAvatar;
+                    document.getElementById('currentAvatar').innerHTML = `<img src="${newAvatar}" class="w-full h-full rounded-full object-cover">`;
+                    document.getElementById('profileAvatar').innerHTML = `<img src="${newAvatar}" class="w-full h-full rounded-full object-cover">`;
                 };
-                reader.readAsDataURL(file);
+                reader.readAsBinaryString(file);
             });
             
-            hideModal('uploadModal');
-            document.getElementById('uploadForm').reset();
-            
-            // Show success message
-            alert('Upload thành công!');
-        }
-        
-        // Edit links handler
-        function handleEditLinks(event) {
-            event.preventDefault();
-            
-            memberData.socialLinks = {
-                facebook: document.getElementById('facebookInput').value,
-                instagram: document.getElementById('instagramInput').value,
-                locket: document.getElementById('locketInput').value
-            };
-            
-            saveMemberData();
-            renderProfile();
-            hideModal('editLinksModal');
-            
-            alert('Cập nhật liên kết thành công!');
-        }
-        
-        // Save member data
-        function saveMemberData() {
-            localStorage.setItem(`member_${memberData.id}`, JSON.stringify(memberData));
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMemberData();
-            setupEventListeners();
-            
-            // Initialize animations
-            anime({
-                targets: '.content-section',
-                translateY: [50, 0],
-                opacity: [0, 1],
-                duration: 800,
-                delay: anime.stagger(200),
-                easing: 'easeOutQuad'
-            });
-        });
-        
-        // Setup all event listeners
-        function setupEventListeners() {
             // Upload media
             document.getElementById('uploadBtn').addEventListener('click', () => showModal('uploadModal'));
             document.getElementById('cancelUpload').addEventListener('click', () => hideModal('uploadModal'));
-            document.getElementById('uploadForm').addEventListener('submit', handleUpload);
+            document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const files = document.getElementById('fileInput').files;
+                const description = document.getElementById('fileDescription').value;
+                
+                for (const file of files) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        memberData.media.push({
+                            type: file.type.startsWith('image/') ? 'image' : 'video',
+                            url: e.target.result,
+                            description: description || file.name
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+                
+                await saveToFirebase();
+                renderMediaGallery();
+                hideModal('uploadModal');
+            });
             
-            // Edit social links
+            // Edit links
             document.getElementById('editLinksBtn').addEventListener('click', () => {
                 document.getElementById('facebookInput').value = memberData.socialLinks.facebook || '';
                 document.getElementById('instagramInput').value = memberData.socialLinks.instagram || '';
@@ -879,23 +635,54 @@
                 showModal('editLinksModal');
             });
             document.getElementById('cancelEditLinks').addEventListener('click', () => hideModal('editLinksModal'));
-            document.getElementById('editLinksForm').addEventListener('submit', handleEditLinks);
-            
-            // Edit profile
-            document.getElementById('editProfileBtn').addEventListener('click', openEditProfileModal);
-            document.getElementById('cancelEditProfile').addEventListener('click', () => hideModal('editProfileModal'));
-            document.getElementById('editProfileForm').addEventListener('submit', handleEditProfile);
-            
-            // Avatar management
-            document.getElementById('changeAvatarBtn').addEventListener('click', () => {
-                document.getElementById('avatarInput').click();
+            document.getElementById('editLinksForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                memberData.socialLinks = {
+                    facebook: document.getElementById('facebookInput').value,
+                    instagram: document.getElementById('instagramInput').value,
+                    locket: document.getElementById('locketInput').value
+                };
+                await saveToFirebase();
+                renderProfile();
+                hideModal('editLinksModal');
             });
-            document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
             
-            // Group management
-            document.getElementById('createGroupBtn').addEventListener('click', openCreateGroupModal);
-            document.getElementById('cancelCreateGroup').addEventListener('click', () => hideModal('createGroupModal'));
-            document.getElementById('createGroupForm').addEventListener('submit', handleCreateGroup);
+            // Edit hobbies
+            document.getElementById('editHobbiesBtn').addEventListener('click', () => {
+                const section = document.getElementById('hobbiesEditSection');
+                section.classList.toggle('hidden');
+            });
+            
+            document.getElementById('addHobbyBtn').addEventListener('click', () => {
+                const input = document.getElementById('newHobbyInput');
+                const hobby = input.value.trim();
+                if (hobby) {
+                    memberData.hobbies.push(hobby);
+                    renderHobbies();
+                    input.value = '';
+                }
+            });
+            
+            document.getElementById('saveHobbiesBtn').addEventListener('click', async () => {
+                await saveToFirebase();
+                alert('✅ Đã lưu sở thích!');
+                document.getElementById('hobbiesEditSection').classList.add('hidden');
+            });
+            
+            // Edit quote
+            document.getElementById('editQuoteBtn').addEventListener('click', () => {
+                const section = document.getElementById('quoteEditSection');
+                document.getElementById('quoteInput').value = memberData.favoriteQuote;
+                section.classList.toggle('hidden');
+            });
+            
+            document.getElementById('saveQuoteBtn').addEventListener('click', async () => {
+                memberData.favoriteQuote = document.getElementById('quoteInput').value;
+                await saveToFirebase();
+                renderProfile();
+                document.getElementById('quoteEditSection').classList.add('hidden');
+                alert('✅ Đã lưu câu nói yêu thích!');
+            });
             
             // Navigation
             document.getElementById('backBtn').addEventListener('click', () => {
@@ -908,140 +695,19 @@
             });
         }
         
-        // Avatar management
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMemberData();
+            setupEventListeners();
             
-            const currentUser = checkAuth();
-            if (!currentUser) return;
-            
-            // Simulate upload
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                memberData.avatarUrl = e.target.result;
-                saveMemberData();
-                
-                // Update UI
-                document.getElementById('currentAvatar').innerHTML = `<img src="${e.target.result}" alt="Avatar" class="w-full h-full rounded-full object-cover">`;
-                
-                A5K60Backend.showNotification('Avatar đã được cập nhật!', 'success');
-            };
-            reader.readAsDataURL(file);
-        }
-        
-        // Profile editing
-        function openEditProfileModal() {
-            document.getElementById('editDisplayName').value = memberData.name;
-            document.getElementById('editJoinDate').value = memberData.joinDate;
-            document.getElementById('editBio').value = memberData.bio;
-            showModal('editProfileModal');
-        }
-        
-        function handleEditProfile(event) {
-            event.preventDefault();
-            
-            memberData.name = document.getElementById('editDisplayName').value;
-            memberData.joinDate = document.getElementById('editJoinDate').value;
-            memberData.bio = document.getElementById('editBio').value;
-            
-            saveMemberData();
-            renderProfile();
-            hideModal('editProfileModal');
-            
-            A5K60Backend.showNotification('Thông tin đã được cập nhật!', 'success');
-        }
-        
-        // Group management
-        function openCreateGroupModal() {
-            // Populate member selection
-            const memberSelection = document.getElementById('memberSelection');
-            memberSelection.innerHTML = '';
-            
-            for (let i = 1; i <= 46; i++) {
-                const memberId = i.toString().padStart(2, '0');
-                if (memberId !== memberData.id) { // Don't include self
-                    const checkbox = document.createElement('div');
-                    checkbox.className = 'flex items-center space-x-2 mb-2';
-                    checkbox.innerHTML = `
-                        <input type="checkbox" id="member_${memberId}" value="${memberId}" class="rounded">
-                        <label for="member_${memberId}" class="text-sm">Thành viên ${memberId}</label>
-                    `;
-                    memberSelection.appendChild(checkbox);
-                }
-            }
-            
-            showModal('createGroupModal');
-        }
-        
-        function handleCreateGroup(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('groupName').value;
-            const description = document.getElementById('groupDescription').value;
-            const selectedMembers = [];
-            
-            // Get selected members
-            for (let i = 1; i <= 46; i++) {
-                const memberId = i.toString().padStart(2, '0');
-                const checkbox = document.getElementById(`member_${memberId}`);
-                if (checkbox && checkbox.checked) {
-                    selectedMembers.push(memberId);
-                }
-            }
-            
-            const currentUser = checkAuth();
-            
-            createGroup({
-                name,
-                description,
-                members: selectedMembers,
-                creatorId: currentUser.memberId
-            }, (result) => {
-                if (result.success) {
-                    A5K60Backend.showNotification('Nhóm đã được tạo thành công!', 'success');
-                    renderMemberGroups();
-                    hideModal('createGroupModal');
-                    document.getElementById('createGroupForm').reset();
-                } else {
-                    A5K60Backend.showNotification(result.message || 'Có lỗi xảy ra!', 'error');
-                }
+            anime({
+                targets: '.content-section',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                duration: 800,
+                delay: anime.stagger(200)
             });
-        }
-        
-        function renderMemberGroups() {
-            const groups = getMemberGroups(memberData.id);
-            const groupsList = document.getElementById('groupsList');
-            const noGroups = document.getElementById('noGroups');
-            
-            if (groups.length === 0) {
-                groupsList.innerHTML = '';
-                noGroups.classList.remove('hidden');
-                return;
-            }
-            
-            noGroups.classList.add('hidden');
-            groupsList.innerHTML = groups.map(group => {
-                const groupData = getGroupById(group.id);
-                return `
-                    <div class="social-link p-4 rounded-xl cursor-pointer" onclick="viewGroup('${group.id}')">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <div class="font-medium text-gray-800">${group.name}</div>
-                                <div class="text-sm text-gray-500">${groupData?.members?.length || 0} thành viên</div>
-                            </div>
-                            <div class="text-2xl">👥</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function viewGroup(groupId) {
-            // Store group ID and navigate to group page
-            localStorage.setItem('selectedGroup', groupId);
-            window.location.href = 'group.html'; // We'll create this page next
-        }
+        });
     </script>
 </body>
 </html>
