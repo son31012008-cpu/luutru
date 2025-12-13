@@ -167,18 +167,22 @@
                 </div>
             `;
             
-            card.addEventListener('click', () => {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                if (!currentUser) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-                
-                localStorage.setItem('selectedMember', memberId);
-                window.location.href = 'profile.html';
-            });
-            
-            return card;
+           card.addEventListener('click', () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Kiểm tra quyền truy cập: chỉ admin hoặc chính chủ mới được vào
+    if (currentUser.role !== 'admin' && currentUser.memberId !== memberId) {
+        alert('Bạn chỉ có thể xem trang cá nhân của chính mình!');
+        return; // Ngăn chuyển hướng
+    }
+    
+    localStorage.setItem('selectedMember', memberId);
+    window.location.href = 'profile.html';
+});
         }
         
         function generateAvatar(id) {
