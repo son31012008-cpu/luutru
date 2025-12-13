@@ -230,14 +230,10 @@
             try {
                 showNotification('Đang gửi email xác thực...', 'info');
                 
-                // Action code settings với cấu hình đầy đủ để tránh lỗi domain
+                // SỬA ĐÂY: Đơn giản hóa actionCodeSettings, chỉ giữ lại 2 trường bắt buộc
                 const actionCodeSettings = {
                     url: window.location.origin + '/account.html?verified=true',
-                    handleCodeInApp: true,
-                    // Thêm các trường này để tránh lỗi "unauthorized-continue-uri"
-                    dynamicLinkDomain: undefined,
-                    iOS: { bundleId: undefined },
-                    android: { packageName: undefined, installApp: false, minimumVersion: null }
+                    handleCodeInApp: true
                 };
                 
                 // Lưu email vào localStorage để xác thực sau
