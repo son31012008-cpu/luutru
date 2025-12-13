@@ -32,6 +32,9 @@
         .member-number { position: absolute; top: 1rem; right: 1rem; background: #E17055; color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.875rem; }
         .logout-btn { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
         .logout-btn:hover { background: #e74c3c; color: white; }
+        /* THÊM STYLE CHO NÚT CÀI ĐẶT */
+        .settings-btn { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); transition: all 0.3s ease; }
+        .settings-btn:hover { background: #3498db; color: white; }
         
         /* Notification Toast Styles */
         .notification {
@@ -78,6 +81,10 @@
                     <span class="text-sm text-gray-600">Xin chào, </span>
                     <span id="userGreeting" class="text-sm font-semibold text-gray-800"></span>
                 </div>
+                <!-- THÊM NÚT CÀI ĐẶT TÀI KHOẢN -->
+                <a href="account.html" class="settings-btn px-3 py-2 rounded-lg text-sm font-medium">
+                    ⚙️ Cài đặt
+                </a>
                 <button id="logoutBtn" class="logout-btn px-4 py-2 rounded-lg text-sm font-medium">
                     Đăng xuất
                 </button>
