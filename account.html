@@ -230,9 +230,9 @@
             try {
                 showNotification('Đang gửi email xác thực...', 'info');
                 
-                // SỬA ĐÂY: Đơn giản hóa actionCodeSettings, chỉ giữ lại 2 trường bắt buộc
+                // SỬA ĐÂY: URL callback đúng với GitHub Pages
                 const actionCodeSettings = {
-                    url: window.location.origin + '/account.html?verified=true',
+                    url: 'https://son31012008-cpu.github.io/luutru/account.html?verified=true',
                     handleCodeInApp: true
                 };
                 
