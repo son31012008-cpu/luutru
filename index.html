@@ -6,129 +6,32 @@
     <title>Những con khỉ A5K60 - Trang chủ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            font-family: 'Inter', 'Poppins', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%);
-            min-height: 100vh;
-        }
-        
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .member-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .member-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            background: rgba(255, 255, 255, 0.95);
-        }
-        
-        .search-input {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .search-input:focus {
-            background: rgba(255, 255, 255, 1);
-            border-color: #E17055;
-            box-shadow: 0 0 0 4px rgba(225, 112, 85, 0.1);
-        }
-        
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn.active {
-            background: #E17055;
-            color: white;
-            border-color: #E17055;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, rgba(225, 112, 85, 0.1) 0%, rgba(116, 185, 255, 0.1) 100%);
-            border-radius: 2rem;
-        }
-        
-        .floating-element {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .floating-element:nth-child(2) {
-            animation-delay: 2s;
-        }
-        
-        .floating-element:nth-child(3) {
-            animation-delay: 4s;
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-        
-        .member-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #E17055 0%, #D63031 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            margin: 0 auto 1rem;
-        }
-        
-        .member-number {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: #E17055;
-            color: white;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.875rem;
-        }
-        
-        .logout-btn {
-            background: rgba(231, 76, 60, 0.1);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .logout-btn:hover {
-            background: #e74c3c;
-            color: white;
-        }
+        * { font-family: 'Inter', 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%); min-height: 100vh; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .member-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; cursor: pointer; }
+        .member-card:hover { background: rgba(255, 255, 255, 0.95); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+        .search-input { background: rgba(255, 255, 255, 0.9); border: 2px solid transparent; transition: all 0.3s ease; }
+        .search-input:focus { background: rgba(255, 255, 255, 1); border-color: #E17055; box-shadow: 0 0 0 4px rgba(225, 112, 85, 0.1); }
+        .filter-btn { background: rgba(255, 255, 255, 0.8); border: 2px solid transparent; transition: all 0.3s ease; }
+        .filter-btn.active { background: #E17055; color: white; border-color: #E17055; }
+        .hero-section { background: linear-gradient(135deg, rgba(225, 112, 85, 0.1) 0%, rgba(116, 185, 255, 0.1) 100%); border-radius: 2rem; }
+        .floating-element { animation: float 6s ease-in-out infinite; }
+        .floating-element:nth-child(2) { animation-delay: 2s; }
+        .floating-element:nth-child(3) { animation-delay: 4s; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .member-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #E17055 0%, #D63031 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; margin: 0 auto 1rem; border: 4px solid white; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        .member-number { position: absolute; top: 1rem; right: 1rem; background: #E17055; color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.875rem; }
+        .logout-btn { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
+        .logout-btn:hover { background: #e74c3c; color: white; }
     </style>
 </head>
 <body>
@@ -214,52 +117,90 @@
             
             <!-- Members Grid -->
             <div id="membersGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                <!-- Members will be populated by JavaScript -->
+                <!-- Members will be populated by Firebase -->
             </div>
             
             <!-- No Results -->
             <div id="noResults" class="hidden text-center py-12">
                 <div class="text-6xl mb-4">🔍</div>
                 <h3 class="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy thành viên</h3>
-                <p class="text-gray-500">Vui lòng thử lại với từ khóa khác</p>
+                <p class="text-sm text-gray-500">Vui lòng thử lại với từ khóa khác</p>
             </div>
         </div>
     </main>
     
     <script>
-        // Mock member data
-        const members = [];
+        // Danh sách 46 thành viên chính xác
         const memberNames = [
-            'Anh Khôi', 'Bảo Anh', 'Công Minh', 'Đức Huy', 'Gia Bảo',
-            'Hoàng Long', 'Khánh Linh', 'Lê Nam', 'Minh Anh', 'Ngọc Hà',
-            'Phương Linh', 'Quang Huy', 'Thanh Tùng', 'Tuấn Kiệt', 'Văn Dũng',
-            'Bích Ngọc', 'Đình Phong', 'Hải Yến', 'Kim Oanh', 'Mai Lan',
-            'Nguyễn Văn A', 'Phan Thị B', 'Trần Văn C', 'Lê Thị D', 'Hoàng Văn E',
-            'Vũ Thị F', 'Đặng Văn G', 'Ngô Thị H', 'Bùi Văn I', 'Đỗ Thị K',
-            'Hồ Văn L', 'Nguyễn Thị M', 'Phạm Văn N', 'Trịnh Thị O', 'Lý Văn P',
-            'Tạ Thị Q', 'Đinh Văn R', 'Hà Thị S', 'Vương Văn T', 'Lưu Thị U',
-            'Tôn Văn V', 'Triệu Thị W', 'Quách Văn X', 'Dương Thị Y', 'Lâm Văn Z',
-            'Tất Thị AA'
+            "Võ Đăng Hoàng Anh", "Võ Hoàng Anh", "Đinh Viết Dũng", "Lê Thị Thùy Dương", "Nguyễn Hàn Giang",
+            "Nguyễn Thị Diễm Hằng", "Nguyễn Thị Thúy Hằng", "Nguyễn Bảo Hoàng", "Nguyễn Văn Quốc Hội", "Huỳnh Gia Huy",
+            "Trần Huy Hoàng", "Hồ Công Hưng", "Nguyễn Anh Kha", "Lê Quang Khoa", "Nguyễn Anh Khôi",
+            "Mai Đăng Linh", "Nguyễn Hoài Phương Linh", "Nguyễn Thị Khánh Linh", "Nguyễn Thảo Ly", "Nguyễn Ngọc Huy Minh",
+            "Võ Khánh Minh", "Lê Thị Trà My", "Nguyễn Diễm My", "Võ Trần Thục Nghi", "Lê Hữu Nghĩa",
+            "Nguyễn Bích Ngọc", "Trần Thị Thanh Ngọc", "Nguyễn Đăng Nguyên", "Nguyễn Xuân Hoàng Nguyên", "Phạm Hoàng Thảo Nguyên",
+            "Lê Minh Nhật", "Nguyễn Thị Quỳnh Như", "Đặng Thành Phát", "Lê Ngọc Quang", "Trương Nhật Sơn",
+            "Nguyễn Thái Sơn", "Vũ Minh Sơn", "Nguyễn Quang Thanh", "Trần Hương Trà", "Nguyễn Ngọc Thảo Trang",
+            "Trần Ngọc Huyền Trân", "Lê Nguyễn Khánh Triều", "Lê Ngọc Thanh Trúc", "Lê Võ Anh Tuấn", "Lê Thanh Tuyến",
+            "Nguyễn Hà Vy"
         ];
-        
-        // Generate member data
-        for (let i = 1; i <= 46; i++) {
-            const memberId = i.toString().padStart(2, '0');
-            members.push({
-                id: memberId,
-                name: memberNames[i-1] || `Thành viên ${memberId}`,
-                avatar: generateAvatar(memberId),
-                bio: `Thành viên số ${memberId} của nhóm A5K60`,
-                joinDate: `202${Math.floor(Math.random() * 3 + 1)}-${Math.floor(Math.random() * 12 + 1).toString().padStart(2, '0')}-${Math.floor(Math.random() * 28 + 1).toString().padStart(2, '0')}`
+
+        // Tạo thẻ thành viên
+        function createMemberCard(memberId, firebaseData) {
+            const card = document.createElement('div');
+            card.className = 'member-card rounded-2xl p-4 relative';
+            card.setAttribute('data-member-id', memberId);
+            
+            const defaultName = memberNames[parseInt(memberId) - 1];
+            const name = firebaseData?.name || defaultName;
+            const bio = firebaseData?.bio || 'Thành viên A5K60';
+            const avatar = firebaseData?.avatar || generateAvatar(memberId);
+            
+            card.innerHTML = `
+                <div class="member-number">${memberId}</div>
+                <div class="member-avatar">${avatar}</div>
+                <h3 class="font-semibold text-gray-800 text-center mb-1">${name}</h3>
+                <p class="text-xs text-gray-500 text-center mb-3">${bio}</p>
+                <div class="flex justify-center">
+                    <span class="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                        Tham gia: 2024
+                    </span>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (!currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                localStorage.setItem('selectedMember', memberId);
+                window.location.href = 'profile.html';
             });
+            
+            return card;
         }
         
         function generateAvatar(id) {
             const emojis = ['🐵', '🙈', '🙉', '🙊', '🦍', '🐒'];
-            return emojis[Math.floor(Math.random() * emojis.length)];
+            return emojis[parseInt(id) % 6];
         }
         
-        // Check authentication
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
+            authDomain: "a5k60-website.firebaseapp.com",
+            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "a5k60-website",
+            storageBucket: "a5k60-website.firebasestorage.app",
+            messagingSenderId: "1083754554024",
+            appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        // Kiểm tra đăng nhập
         function checkAuth() {
             const currentUser = localStorage.getItem('currentUser');
             if (!currentUser) {
@@ -269,120 +210,136 @@
             return JSON.parse(currentUser);
         }
         
-        // Render members
-        function renderMembers(membersToRender = members) {
+        // Render thành viên từ Firebase
+        function renderMembersFromFirebase() {
             const grid = document.getElementById('membersGrid');
             const noResults = document.getElementById('noResults');
             
-            if (membersToRender.length === 0) {
+            db.ref('members').once('value').then(snapshot => {
+                const members = snapshot.val();
+                
+                if (!members) {
+                    // Nếu chưa có dữ liệu, tạo mặc định
+                    for (let i = 1; i <= 46; i++) {
+                        const memberId = i.toString().padStart(2, '0');
+                        const card = createMemberCard(memberId, {});
+                        grid.appendChild(card);
+                    }
+                    return;
+                }
+                
                 grid.innerHTML = '';
-                noResults.classList.remove('hidden');
-                return;
-            }
-            
-            noResults.classList.add('hidden');
-            
-            grid.innerHTML = membersToRender.map(member => `
-                <div class="member-card rounded-2xl p-4 relative" data-member-id="${member.id}">
-                    <div class="member-number">${member.id}</div>
-                    <div class="member-avatar">
-                        ${member.avatar}
-                    </div>
-                    <h3 class="font-semibold text-gray-800 text-center mb-1">${member.name}</h3>
-                    <p class="text-xs text-gray-500 text-center mb-3">${member.bio}</p>
-                    <div class="text-center">
-                        <span class="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
-                            Tham gia: ${member.joinDate}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Add click events
-            grid.querySelectorAll('.member-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const memberId = this.dataset.memberId;
-                    const currentUser = checkAuth();
+                Object.keys(members).sort().forEach(memberId => {
+                    const card = createMemberCard(memberId, members[memberId]);
+                    grid.appendChild(card);
+                });
+                
+                noResults.classList.add('hidden');
+            });
+        }
+        
+        // Lắng nghe thay đổi real-time
+        function setupRealtimeListener() {
+            db.ref('members').on('child_changed', snapshot => {
+                const memberId = snapshot.key;
+                const data = snapshot.val();
+                const card = document.querySelector(`[data-member-id="${memberId}"]`);
+                
+                if (card) {
+                    const nameEl = card.querySelector('h3');
+                    const bioEl = card.querySelector('p');
+                    const avatarEl = card.querySelector('.member-avatar');
                     
-                    if (currentUser.role === 'admin' || currentUser.memberId === memberId) {
-                        localStorage.setItem('selectedMember', memberId);
-                        window.location.href = 'profile.html';
+                    nameEl.textContent = data.name || memberNames[parseInt(memberId) - 1];
+                    bioEl.textContent = data.bio || 'Thành viên A5K60';
+                    avatarEl.textContent = data.avatar || generateAvatar(memberId);
+                    
+                    // Hiệu ứng khi được cập nhật
+                    anime({
+                        targets: card,
+                        scale: [1, 1.05, 1],
+                        duration: 500
+                    });
+                }
+            });
+        }
+        
+        // Tìm kiếm
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.member-card');
+                let hasResults = false;
+                
+                cards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    const id = card.getAttribute('data-member-id');
+                    if (name.includes(query) || id.includes(query)) {
+                        card.style.display = 'block';
+                        hasResults = true;
                     } else {
-                        alert('Bạn chỉ có thể xem thông tin của chính mình!');
+                        card.style.display = 'none';
                     }
                 });
+                
+                noResults.classList.toggle('hidden', hasResults || query === '');
             });
+        }
+        
+        // Lọc
+        function setupFilter() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    const cards = document.querySelectorAll('.member-card');
+                    
+                    if (filter === 'all') {
+                        cards.forEach(card => card.style.display = 'block');
+                        return;
+                    }
+                    
+                    const [start, end] = filter.split('-').map(Number);
+                    cards.forEach(card => {
+                        const id = parseInt(card.getAttribute('data-member-id'));
+                        card.style.display = (id >= start && id <= end) ? 'block' : 'none';
+                    });
+                });
+            });
+        }
+        
+        // Đăng xuất
+        function setupLogout() {
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            });
+        }
+        
+        // Khởi tạo khi trang load
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = checkAuth();
+            if (!currentUser) return;
             
-            // Animate cards
+            document.getElementById('userGreeting').textContent = 
+                currentUser.role === 'admin' ? 'Admin' : `Member ${currentUser.memberId}`;
+            
+            renderMembersFromFirebase();
+            setupRealtimeListener();
+            setupSearch();
+            setupFilter();
+            setupLogout();
+            
+            // Animation
             anime({
                 targets: '.member-card',
                 translateY: [50, 0],
                 opacity: [0, 1],
                 duration: 600,
-                delay: anime.stagger(100),
-                easing: 'easeOutQuad'
-            });
-        }
-        
-        // Filter members
-        function filterMembers(filter) {
-            let filtered = members;
-            
-            if (filter !== 'all') {
-                const [start, end] = filter.split('-').map(Number);
-                filtered = members.filter(member => {
-                    const id = parseInt(member.id);
-                    return id >= start && id <= end;
-                });
-            }
-            
-            renderMembers(filtered);
-        }
-        
-        // Search members
-        function searchMembers(query) {
-            const filtered = members.filter(member => 
-                member.name.toLowerCase().includes(query.toLowerCase()) ||
-                member.id.includes(query) ||
-                member.bio.toLowerCase().includes(query.toLowerCase())
-            );
-            renderMembers(filtered);
-        }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentUser = checkAuth();
-            if (!currentUser) return;
-            
-            // Set user greeting
-            document.getElementById('userGreeting').textContent = 
-                currentUser.role === 'admin' ? 'Admin' : `Member ${currentUser.memberId}`;
-            
-            // Render initial members
-            renderMembers();
-            
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', function() {
-                searchMembers(this.value);
-            });
-            
-            // Filter functionality
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Update active state
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Filter members
-                    filterMembers(this.dataset.filter);
-                });
-            });
-            
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
+                delay: anime.stagger(100)
             });
         });
     </script>
