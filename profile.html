@@ -345,63 +345,6 @@
         </div>
     </div>
 
-    <!-- Photo Library Modal -->
-    <div id="photoLibraryModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePhotoLibrary()">&times;</span>
-            <h2>📸 Thư viện ảnh</h2>
-            <div class="upload-area" onclick="document.getElementById('photoUpload').click()">
-                <h3>+ Click để tải ảnh lên</h3>
-                <p>Ảnh sẽ được lưu vào Firebase (nén tự động)</p>
-            </div>
-            <input type="file" id="photoUpload" accept="image/*" multiple onchange="uploadPhotos(event)">
-            <div id="libraryPhotos" class="photo-grid"></div>
-            <button class="btn" id="selectPhotoBtn" onclick="selectPhotoForPurpose()" style="margin-top: 20px; display: none;">
-                Chọn ảnh
-            </button>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeEditModal()">&times;</span>
-            <h2>✏️ Chỉnh sửa thông tin cá nhân</h2>
-            <form class="edit-form" onsubmit="saveProfile(event)">
-                <div class="form-group">
-                    <label>Tên hiển thị</label>
-                    <input type="text" id="editName" required>
-                </div>
-                <div class="form-group">
-                    <label>Bio</label>
-                    <textarea id="editBio" rows="3"></textarea>
-                </div>
-                <div class="form-group avatar-upload">
-                    <label>Ảnh đại diện</label>
-                    <img id="avatarPreview" class="avatar-preview" src="" alt="Avatar Preview">
-                    <input type="file" id="avatarUpload" accept="image/*" onchange="previewAvatar(event)">
-                </div>
-                <div class="form-group">
-                    <label>Facebook URL</label>
-                    <input type="url" id="editFacebook">
-                </div>
-                <div class="form-group">
-                    <label>Instagram URL</label>
-                    <input type="url" id="editInstagram">
-                </div>
-                <div class="form-group">
-                    <label>Locket URL</label>
-                    <input type="url" id="editLocket">
-                </div>
-                <div class="form-group">
-                    <label>Sở thích (ngăn cách bằng dấu phẩy)</label>
-                    <input type="text" id="editHobbies">
-                </div>
-                <button type="submit" class="btn" style="width: 100%;">💾 Lưu thay đổi</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Firebase SDK -->
     <script type="module">
         // Import Firebase
@@ -423,14 +366,14 @@
             signInAnonymously
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // 🔽 THAY THẾ BẰNG CONFIG CỦA BẠN
+        // ✨ CONFIG FIREBASE CỦA BẠN ĐÃ ĐƯỢC CẬP NHẬT ✨
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyD5BemEEUScWswEOiIxFF1y8S6grbW6bws",
+            authDomain: "my-profile-app-986d2.firebaseapp.com",
+            projectId: "my-profile-app-986d2",
+            storageBucket: "my-profile-app-986d2.firebasestorage.app",
+            messagingSenderId: "866846074248",
+            appId: "1:866846074248:web:1bdb330e14d4534228c63d"
         };
 
         // Initialize Firebase
@@ -604,7 +547,20 @@
             // Update links
             document.getElementById('facebookLink').innerHTML = 
                 data.facebook ? `<a href="${data.facebook}" target="_blank">${data.facebook}</a>` : 'Chưa cập nhật';
-            // ... (giữ nguyên các phần còn lại)
+            document.getElementById('instagramLink').innerHTML = 
+                data.instagram ? `<a href="${data.instagram}" target="_blank">${data.instagram}</a>` : 'Chưa cập nhật';
+            document.getElementById('locketLink').innerHTML = 
+                data.locket ? `<a href="${data.locket}" target="_blank">${data.locket}</a>` : 'Chưa cập nhật';
+            
+            // Update hobbies
+            const hobbiesList = document.getElementById('hobbiesList');
+            if (data.hobbies && data.hobbies.length > 0) {
+                hobbiesList.innerHTML = data.hobbies.map(hobby => 
+                    `<span style="display: inline-block; background: #667eea; color: white; padding: 5px 10px; margin: 5px; border-radius: 15px;">${hobby}</span>`
+                ).join('');
+            } else {
+                hobbiesList.innerHTML = '<p style="color: #999;">Chưa cập nhật sở thích</p>';
+            }
             
             // Update galleries
             updatePhotoGallery();
@@ -612,7 +568,7 @@
             updateGroupList();
         }
 
-        // Photo Library functions (giữ nguyên như code trước)
+        // Photo Library functions
         function openPhotoLibrary(purpose) {
             window.currentPhotoPurpose = purpose;
             document.getElementById('photoLibraryModal').style.display = 'block';
@@ -665,7 +621,7 @@
             closePhotoLibrary();
         }
 
-        // 🔧 HÀM NÉN ẢNH TRƯỚC KHI UPLOAD
+        // HÀM NÉN ẢNH TRƯỚC KHI UPLOAD
         function compressImage(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -792,7 +748,7 @@
             input.click();
         }
 
-        // Edit Profile (giữ nguyên như trước)
+        // Edit Profile
         function openEditModal() {
             const data = window.profileData || {};
             document.getElementById('editName').value = data.name || '';
