@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * { font-family: 'Inter', 'Poppins', sans-serif; }
         body { background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%); min-height: 100vh; }
@@ -45,6 +46,37 @@
         .shape:nth-child(2) { top: 60%; right: 15%; animation-delay: 3s; }
         .shape:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 6s; }
         @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-30px) rotate(180deg); } }
+        
+        /* Notification Toast Styles */
+        .notification {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 20rem;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 1.7s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .notification.info { border-color: #3498db; }
+        .notification.success { border-color: #2ecc71; }
+        .notification.warning { border-color: #f39c12; }
+        .notification.error { border-color: #e74c3c; }
+        .notification-icon { margin-right: 0.75rem; font-size: 1.25rem; }
+        .notification-message { color: #2c3e50; font-weight: 500; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -69,6 +101,14 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Notification Toast -->
+    <div id="notification" class="notification hidden">
+        <div class="flex items-center">
+            <div id="notificationIcon" class="notification-icon"></div>
+            <div id="notificationMessage" class="notification-message"></div>
+        </div>
+    </div>
     
     <!-- Main Content -->
     <main class="pt-20 px-4 pb-8">
@@ -167,6 +207,30 @@
                     </div>
                 </section>
                 
+                <!-- Group Media Gallery -->
+                <section class="content-section p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">👥 Ảnh/Video nhóm chung</h3>
+                        <button id="uploadGroupBtn" class="upload-btn px-4 py-2 text-white rounded-lg text-sm font-medium">
+                            + Chia sẻ
+                        </button>
+                    </div>
+                    
+                    <div id="groupMediaGallery" class="splide">
+                        <div class="splide__track">
+                            <ul id="groupMediaSlides" class="splide__list">
+                                <!-- Group media items will be populated -->
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="noGroupMedia" class="text-center py-8">
+                        <div class="text-4xl mb-2">👥</div>
+                        <p class="text-gray-500">Chưa có media nhóm</p>
+                        <p class="text-sm text-gray-400">Hãy chia sẻ ảnh/video đầu tiên!</p>
+                    </div>
+                </section>
+                
                 <!-- Social Links & Groups -->
                 <section class="content-section p-6">
                     <div class="flex items-center justify-between mb-6">
@@ -220,9 +284,7 @@
                     </div>
                     
                     <div id="hobbiesContainer" class="flex flex-wrap gap-2">
-                        <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Âm nhạc</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Du lịch</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Nhiếp ảnh</span>
+                        <!-- Hobbies rendered by JavaScript -->
                     </div>
                     
                     <div id="hobbiesEditSection" class="hidden mt-4">
@@ -394,8 +456,26 @@
             media: []
         };
         
-        let splide;
+        let splide, groupSplide;
         let isEditMode = false;
+        
+        // Hàm hiển thị thông báo
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationIcon = document.getElementById('notificationIcon');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
+            notificationIcon.textContent = icons[type] || icons.info;
+            notificationMessage.textContent = message;
+            
+            notification.className = `notification ${type}`;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 2000);
+        }
         
         // Kiểm tra đăng nhập
         function checkAuth() {
@@ -408,33 +488,44 @@
         }
         
         // Tải dữ liệu từ Firebase
-        function loadMemberData() {
+        async function loadMemberData() {
             const selectedMember = localStorage.getItem('selectedMember');
             const currentUser = checkAuth();
             if (!currentUser) return;
             
             if (!selectedMember) {
-                alert('Vui lòng chọn thành viên từ trang chủ');
+                showNotification('Vui lòng chọn thành viên từ trang chủ', 'warning');
                 window.location.href = 'index.html';
                 return;
             }
             
             // Kiểm tra quyền
             if (currentUser.role !== 'admin' && currentUser.memberId !== selectedMember) {
-                alert('Bạn chỉ có thể xem thông tin của chính mình!');
+                showNotification('Bạn chỉ có thể xem thông tin của chính mình!', 'warning');
                 window.location.href = 'index.html';
                 return;
             }
             
             memberData.id = selectedMember;
             
-            db.ref(`members/${selectedMember}`).once('value').then(snapshot => {
+            try {
+                const snapshot = await db.ref(`users/${selectedMember}`).once('value');
                 const data = snapshot.val();
                 if (data) {
-                    memberData = { ...memberData, ...data };
+                    memberData = { 
+                        ...memberData, 
+                        ...data,
+                        // Merge media nếu có
+                        media: data.media || [],
+                        hobbies: data.hobbies || ['Âm nhạc', 'Du lịch', 'Nhiếp ảnh']
+                    };
                 }
                 renderProfile();
-            });
+                renderGroupMedia();
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu:', error);
+                showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
+            }
         }
         
         // Hiển thị profile
@@ -466,15 +557,30 @@
             renderMediaGallery();
         }
         
-        // Hiển thị sở thích
+        // Hiển thị sở thích với nút xóa
         function renderHobbies() {
             const container = document.getElementById('hobbiesContainer');
-            container.innerHTML = memberData.hobbies.map(hobby => 
-                `<span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">${hobby}</span>`
+            const currentUser = checkAuth();
+            const canEdit = currentUser && (currentUser.role === 'admin' || currentUser.memberId === memberData.id);
+            
+            container.innerHTML = memberData.hobbies.map((hobby, index) => 
+                `<span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm inline-flex items-center gap-2">
+                    ${hobby}
+                    ${canEdit ? `<button onclick="removeHobby(${index})" class="ml-1 text-red-500 hover:text-red-700 font-bold cursor-pointer">×</button>` : ''}
+                </span>`
             ).join('');
         }
         
-        // Hiển thị media
+        // Xóa sở thích
+        function removeHobby(index) {
+            if (confirm('Bạn có chắc muốn xóa sở thích này?')) {
+                memberData.hobbies.splice(index, 1);
+                renderHobbies();
+                showNotification('✅ Đã xóa sở thích!', 'success');
+            }
+        }
+        
+        // Hiển thị media cá nhân
         function renderMediaGallery() {
             const slides = document.getElementById('mediaSlides');
             const noMedia = document.getElementById('noMedia');
@@ -513,6 +619,55 @@
             splide.mount();
         }
         
+        // Hiển thị media nhóm chung
+        async function renderGroupMedia() {
+            const slides = document.getElementById('groupMediaSlides');
+            const noMedia = document.getElementById('noGroupMedia');
+            const gallery = document.getElementById('groupMediaGallery');
+            
+            try {
+                const snapshot = await db.ref('groupMedia').once('value');
+                const groupMedia = snapshot.val();
+                
+                if (!groupMedia || Object.keys(groupMedia).length === 0) {
+                    gallery.style.display = 'none';
+                    noMedia.classList.remove('hidden');
+                    return;
+                }
+                
+                gallery.style.display = 'block';
+                noMedia.classList.add('hidden');
+                
+                slides.innerHTML = Object.entries(groupMedia).map(([id, item]) => `
+                    <li class="splide__slide">
+                        <div class="media-item">
+                            ${item.type === 'image' ? 
+                                `<img src="${item.url}" alt="${item.description}" class="w-full h-48 object-cover">` :
+                                `<video src="${item.url}" controls class="w-full h-48 object-cover"></video>`}
+                            <div class="p-4">
+                                <p class="text-sm text-gray-600">${item.description}</p>
+                                <p class="text-xs text-gray-400 mt-1">Đăng bởi: ${item.uploaderName || 'Ẩn danh'}</p>
+                            </div>
+                        </div>
+                    </li>
+                `).join('');
+                
+                // Khởi tạo Splide
+                if (groupSplide) groupSplide.destroy();
+                groupSplide = new Splide('#groupMediaGallery', {
+                    type: 'loop',
+                    perPage: 1,
+                    autoplay: true,
+                    arrows: true,
+                    pagination: true
+                });
+                groupSplide.mount();
+                
+            } catch (error) {
+                console.error('Lỗi tải media nhóm:', error);
+            }
+        }
+        
         // Modal
         function showModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
@@ -537,16 +692,11 @@
         // Lưu lên Firebase
         async function saveToFirebase() {
             try {
-                await db.ref(`members/${memberData.id}`).set(memberData);
-                localStorage.setItem(`member_${memberData.id}`, JSON.stringify(memberData));
-                
-                // Trigger sync cho index.html
-                window.dispatchEvent(new CustomEvent('memberUpdated', { detail: { memberId: memberData.id, data: memberData } }));
-                
-                alert('✅ Đã lưu và đồng bộ online!');
+                await db.ref(`users/${memberData.id}`).set(memberData);
+                showNotification('✅ Đã lưu và đồng bộ!', 'success');
             } catch (error) {
                 console.error('Lỗi Firebase:', error);
-                alert('❌ Lỗi đồng bộ, dữ liệu đã lưu offline');
+                showNotification('❌ Lỗi đồng bộ', 'error');
             }
         }
         
@@ -580,26 +730,29 @@
                 renderProfile();
                 isEditMode = false;
                 document.getElementById('profileActions').classList.add('hidden');
+                showNotification('✅ Đã cập nhật thông tin!', 'success');
             });
             
-            // Avatar upload
+            // Avatar upload - ĐÃ SỬA ĐỂ LƯU VÀO FIREBASE
             document.getElementById('profileAvatar').addEventListener('click', () => {
                 if (!isEditMode) return;
                 document.getElementById('avatarInput').click();
             });
             
-            document.getElementById('avatarInput').addEventListener('change', (e) => {
+            document.getElementById('avatarInput').addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
                 
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    const newAvatar = `data:image/jpeg;base64,${btoa(e.target.result)}`;
-                    memberData.avatar = newAvatar;
-                    document.getElementById('currentAvatar').innerHTML = `<img src="${newAvatar}" class="w-full h-full rounded-full object-cover">`;
-                    document.getElementById('profileAvatar').innerHTML = `<img src="${newAvatar}" class="w-full h-full rounded-full object-cover">`;
+                reader.onload = async (e) => {
+                    // Lưu avatar vào Firebase
+                    memberData.avatar = e.target.result;
+                    document.getElementById('currentAvatar').innerHTML = `<img src="${e.target.result}" class="w-full h-full rounded-full object-cover">`;
+                    document.getElementById('profileAvatar').innerHTML = `<img src="${e.target.result}" class="w-full h-full rounded-full object-cover">`;
+                    await saveToFirebase();
+                    showNotification('✅ Đã cập nhật avatar!', 'success');
                 };
-                reader.readAsBinaryString(file);
+                reader.readAsDataURL(file);
             });
             
             // Upload media
@@ -625,6 +778,45 @@
                 await saveToFirebase();
                 renderMediaGallery();
                 hideModal('uploadModal');
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileDescription').value = '';
+            });
+            
+            // Upload group media
+            document.getElementById('uploadGroupBtn').addEventListener('click', async () => {
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'image/*,video/*';
+                fileInput.multiple = true;
+                
+                fileInput.onchange = async (e) => {
+                    const files = e.target.files;
+                    const description = prompt('Mô tả về file này:') || '';
+                    
+                    for (const file of files) {
+                        const reader = new FileReader();
+                        reader.onload = async (e) => {
+                            const mediaData = {
+                                type: file.type.startsWith('image/') ? 'image' : 'video',
+                                url: e.target.result,
+                                description: description || file.name,
+                                uploaderId: memberData.id,
+                                uploaderName: memberData.name,
+                                uploadTime: Date.now()
+                            };
+                            
+                            // Lưu vào Firebase
+                            const newRef = db.ref('groupMedia').push();
+                            await newRef.set(mediaData);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                    
+                    showNotification('✅ Đã upload media nhóm!', 'success');
+                    setTimeout(renderGroupMedia, 1000);
+                };
+                
+                fileInput.click();
             });
             
             // Edit links
@@ -645,6 +837,7 @@
                 await saveToFirebase();
                 renderProfile();
                 hideModal('editLinksModal');
+                showNotification('✅ Đã cập nhật liên kết!', 'success');
             });
             
             // Edit hobbies
@@ -660,13 +853,14 @@
                     memberData.hobbies.push(hobby);
                     renderHobbies();
                     input.value = '';
+                    showNotification('✅ Đã thêm sở thích!', 'success');
                 }
             });
             
             document.getElementById('saveHobbiesBtn').addEventListener('click', async () => {
                 await saveToFirebase();
-                alert('✅ Đã lưu sở thích!');
                 document.getElementById('hobbiesEditSection').classList.add('hidden');
+                showNotification('✅ Đã lưu sở thích!', 'success');
             });
             
             // Edit quote
@@ -681,7 +875,7 @@
                 await saveToFirebase();
                 renderProfile();
                 document.getElementById('quoteEditSection').classList.add('hidden');
-                alert('✅ Đã lưu câu nói yêu thích!');
+                showNotification('✅ Đã lưu câu nói yêu thích!', 'success');
             });
             
             // Navigation
@@ -696,9 +890,13 @@
         }
         
         // Khởi tạo
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMemberData();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMemberData();
             setupEventListeners();
+            
+            // Lắng nghe realtime cho groupMedia
+            db.ref('groupMedia').on('child_added', () => renderGroupMedia());
+            db.ref('groupMedia').on('child_removed', () => renderGroupMedia());
             
             anime({
                 targets: '.content-section',
