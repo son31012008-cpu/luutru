@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A5K60 - Cài đặt tài khoản</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%); min-height: 100vh; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .content-section { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 1.5rem; transition: all 0.3s ease; }
+        .content-section:hover { background: rgba(255, 255, 255, 0.95); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        .form-input { background: rgba(250, 247, 240, 0.8); border: 2px solid transparent; transition: all 0.3s ease; }
+        .form-input:focus { background: rgba(255, 255, 255, 0.9); border-color: #E17055; box-shadow: 0 0 0 4px rgba(225, 112, 85, 0.1); }
+        .btn-primary { background: linear-gradient(135deg, #E17055 0%, #D63031 100%); color: white; transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(225, 112, 85, 0.3); }
+        .btn-secondary { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); transition: all 0.3s ease; }
+        .btn-secondary:hover { background: #3498db; color: white; }
+        .btn-danger { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
+        .btn-danger:hover { background: #e74c3c; color: white; }
+        
+        /* Notification Toast Styles */
+        .notification {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            max-width: 20rem;
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 1.7s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .notification.info { border-color: #3498db; }
+        .notification.success { border-color: #2ecc71; }
+        .notification.warning { border-color: #f39c12; }
+        .notification.error { border-color: #e74c3c; }
+        .notification-icon { margin-right: 0.75rem; font-size: 1.25rem; }
+        .notification-message { color: #2c3e50; font-weight: 500; }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button id="backBtn" class="btn-secondary px-3 py-2 rounded-lg text-sm font-medium">
+                    ← Quay lại
+                </button>
+                <div class="text-2xl">🐒</div>
+                <h1 class="text-xl font-bold text-gray-800">A5K60</h1>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block">
+                    <span class="text-sm text-gray-600">Cài đặt tài khoản</span>
+                </div>
+                <button id="logoutBtn" class="btn-danger px-4 py-2 rounded-lg text-sm font-medium">
+                    Đăng xuất
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Notification Toast -->
+    <div id="notification" class="notification hidden">
+        <div class="flex items-center">
+            <div id="notificationIcon" class="notification-icon"></div>
+            <div id="notificationMessage" class="notification-message"></div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="pt-20 px-4 pb-8">
+        <div class="max-w-2xl mx-auto">
+            <!-- Account Settings -->
+            <section class="content-section p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">⚙️ Cài đặt tài khoản</h2>
+                
+                <!-- Email Verification Section -->
+                <div id="emailSection" class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">🔒 Xác thực email</h3>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-yellow-800">⚠️ Bạn cần xác thực email để thay đổi thông tin tài khoản.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email của bạn</label>
+                            <input type="email" id="userEmail" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="your.email@gmail.com">
+                        </div>
+                        <button id="verifyEmailBtn" class="btn-primary px-6 py-3 rounded-xl text-sm font-medium w-full">
+                            Gửi link xác thực
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Change Password Section (Ẩn mặc định) -->
+                <div id="passwordSection" class="mb-8 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">🔑 Thay đổi mật khẩu</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu mới</label>
+                            <input type="password" id="newPassword" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Xác nhận mật khẩu</label>
+                            <input type="password" id="confirmPassword" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Nhập lại mật khẩu">
+                        </div>
+                        <button id="changePasswordBtn" class="btn-primary px-6 py-3 rounded-xl text-sm font-medium w-full">
+                            Cập nhật mật khẩu
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Change Username Section (Ẩn mặc định) -->
+                <div id="usernameSection" class="mb-8 hidden">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">👤 Thay đổi tên người dùng</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tên người dùng mới</label>
+                            <input type="text" id="newUsername" class="form-input w-full px-4 py-3 rounded-xl focus:outline-none" placeholder="Nhập tên người dùng mới">
+                        </div>
+                        <button id="changeUsernameBtn" class="btn-primary px-6 py-3 rounded-xl text-sm font-medium w-full">
+                            Cập nhật tên người dùng
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Verified Status -->
+                <div id="verifiedSection" class="hidden">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <div class="text-green-500 text-xl mr-3">✅</div>
+                            <div>
+                                <h4 class="font-semibold text-green-800">Email đã xác thực</h4>
+                                <p class="text-sm text-green-700" id="verifiedEmail">email@example.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
+            authDomain: "a5k60-website.firebaseapp.com",
+            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "a5k60-website",
+            storageBucket: "a5k60-website.firebasestorage.app",
+            messagingSenderId: "1083754554024",
+            appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+        
+        let currentUser = null;
+        let isEmailVerified = false;
+        
+        // Hàm hiển thị thông báo tự động ẩn sau 2 giây
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationIcon = document.getElementById('notificationIcon');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            const icons = { info: 'ℹ️', success: '✅', warning: '⚠️', error: '❌' };
+            notificationIcon.textContent = icons[type] || icons.info;
+            notificationMessage.textContent = message;
+            
+            notification.className = `notification ${type}`;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 2000);
+        }
+        
+        // Kiểm tra đăng nhập
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (!user) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return JSON.parse(user);
+        }
+        
+        // Gửi email xác thực
+        async function sendVerificationEmail() {
+            const email = document.getElementById('userEmail').value.trim();
+            
+            if (!email) {
+                showNotification('Vui lòng nhập email!', 'warning');
+                return;
+            }
+            
+            if (!email.endsWith('@gmail.com')) {
+                showNotification('Chỉ chấp nhận email Gmail!', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Đang gửi email xác thực...', 'info');
+                
+                // Tạo action code settings cho Firebase
+                const actionCodeSettings = {
+                    url: window.location.origin + '/account.html?verified=true',
+                    handleCodeInApp: true
+                };
+                
+                // Lưu email vào localStorage để xác thực sau
+                localStorage.setItem('pendingEmail', email);
+                
+                // Gửi email xác thực
+                await auth.sendSignInLinkToEmail(email, actionCodeSettings);
+                
+                showNotification('Đã gửi link xác thực đến ' + email, 'success');
+                
+                // Ẩn nút gửi và hiện hướng dẫn
+                document.getElementById('verifyEmailBtn').textContent = 'Đã gửi! Kiểm tra email của bạn';
+                document.getElementById('verifyEmailBtn').disabled = true;
+                
+            } catch (error) {
+                console.error('Lỗi gửi email:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
+            }
+        }
+        
+        // Xử lý xác thực email khi quay lại từ link
+        async function handleEmailVerification() {
+            if (auth.isSignInWithEmailLink(window.location.href)) {
+                try {
+                    const email = localStorage.getItem('pendingEmail');
+                    if (!email) {
+                        showNotification('Không tìm thấy email để xác thực!', 'error');
+                        return;
+                    }
+                    
+                    await auth.signInWithEmailLink(email, window.location.href);
+                    
+                    // Xóa email đã xác thực
+                    localStorage.removeItem('pendingEmail');
+                    
+                    showNotification('✅ Xác thực email thành công!', 'success');
+                    
+                    // Cập nhật UI
+                    document.getElementById('emailSection').classList.add('hidden');
+                    document.getElementById('verifiedSection').classList.remove('hidden');
+                    document.getElementById('passwordSection').classList.remove('hidden');
+                    document.getElementById('usernameSection').classList.remove('hidden');
+                    
+                } catch (error) {
+                    console.error('Lỗi xác thực:', error);
+                    showNotification('Lỗi xác thực: ' + error.message, 'error');
+                }
+            }
+        }
+        
+        // Thay đổi mật khẩu
+        async function changePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword.length < 6) {
+                showNotification('Mật khẩu phải có ít nhất 6 ký tự!', 'warning');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('Mật khẩu không khớp!', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Đang cập nhật mật khẩu...', 'info');
+                
+                // Cập nhật trong Firebase Database
+                await db.ref(`users/${currentUser.memberId}/password`).set(newPassword);
+                
+                // Cập nhật trong localStorage
+                currentUser.password = newPassword;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                showNotification('✅ Đổi mật khẩu thành công!', 'success');
+                
+                // Xóa form
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+                
+            } catch (error) {
+                console.error('Lỗi đổi mật khẩu:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
+            }
+        }
+        
+        // Thay đổi tên người dùng
+        async function changeUsername() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            
+            if (!newUsername) {
+                showNotification('Vui lòng nhập tên người dùng!', 'warning');
+                return;
+            }
+            
+            if (newUsername.length < 3) {
+                showNotification('Tên người dùng phải có ít nhất 3 ký tự!', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Đang cập nhật tên người dùng...', 'info');
+                
+                // Cập nhật trong Firebase Database
+                await db.ref(`users/${currentUser.memberId}/name`).set(newUsername);
+                
+                // Cập nhật trong localStorage
+                currentUser.name = newUsername;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                showNotification('✅ Đổi tên người dùng thành công!', 'success');
+                
+                // Xóa form
+                document.getElementById('newUsername').value = '';
+                
+            } catch (error) {
+                console.error('Lỗi đổi tên:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
+            }
+        }
+        
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', async () => {
+            currentUser = checkAuth();
+            if (!currentUser) return;
+            
+            // Kiểm tra xác thực email từ URL
+            handleEmailVerification();
+            
+            // Hiển thị email nếu đã xác thực
+            const pendingEmail = localStorage.getItem('pendingEmail');
+            if (pendingEmail) {
+                document.getElementById('userEmail').value = pendingEmail;
+            }
+            
+            // Load thông tin người dùng
+            const userSnapshot = await db.ref(`users/${currentUser.memberId}`).once('value');
+            const userData = userSnapshot.val();
+            
+            if (userData?.verifiedEmail) {
+                isEmailVerified = true;
+                document.getElementById('emailSection').classList.add('hidden');
+                document.getElementById('verifiedSection').classList.remove('hidden');
+                document.getElementById('verifiedEmail').textContent = userData.verifiedEmail;
+                document.getElementById('passwordSection').classList.remove('hidden');
+                document.getElementById('usernameSection').classList.remove('hidden');
+            }
+            
+            // Event listeners
+            document.getElementById('backBtn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('pendingEmail');
+                window.location.href = 'login.html';
+            });
+            
+            document.getElementById('verifyEmailBtn').addEventListener('click', sendVerificationEmail);
+            document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+            document.getElementById('changeUsernameBtn').addEventListener('click', changeUsername);
+        });
+    </script>
+</body>
+</html>
