@@ -12,7 +12,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        /* Notification (tự ẩn sau 2s) */
+        /* Notification (2s auto-hide) */
         .notification {
             position: fixed;
             top: 20px;
@@ -27,12 +27,8 @@
             transform: translateY(-20px);
             transition: all 0.3s ease;
         }
-        .notification.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .notification.show { opacity: 1; transform: translateY(0); }
         .notification.error { background: #f44336; }
-        .notification.info { background: #2196f3; }
         /* Loading */
         .loading {
             display: inline-block;
@@ -44,7 +40,7 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* Container */
+        /* Container & Header */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -97,7 +93,7 @@
             cursor: pointer;
             font-size: 14px;
         }
-        /* Modal & Grid */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -126,6 +122,7 @@
             color: #999;
         }
         .close-modal:hover { color: #333; }
+        /* Grid & Items */
         .photo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -330,7 +327,7 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        // Import Firebase
+        // FIX: LOẠI BỎ storageBucket để không gọi API Storage
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import {
             getDatabase,
@@ -345,23 +342,21 @@
             signInAnonymously
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // ✨ CONFIG MỚI CHO PROJECT a5k60-website
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
             databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "a5k60-website",
-            storageBucket: "a5k60-website.firebasestorage.app",
+            // ❌ XÓA storageBucket để tránh lỗi 403
+            // storageBucket: "a5k60-website.firebasestorage.app",
             messagingSenderId: "1083754554024",
             appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
 
-        // Global variables
         window.app = app;
         window.database = database;
         window.auth = auth;
@@ -374,7 +369,6 @@
 
     <!-- Main JavaScript -->
     <script type="module">
-        // Import globals
         const { 
             app, database, auth, dbRef, dbGet, dbSet, dbOnValue, dbPush
         } = window;
@@ -383,7 +377,6 @@
         let profileUnsubscribe = null;
         let groupsUnsubscribe = null;
 
-        // Initialize authentication
         async function initAuth() {
             try {
                 if (auth.currentUser) {
@@ -403,11 +396,9 @@
             }
         }
 
-        // Setup real-time listeners
         function setupRealTimeListeners() {
             if (!userId) return;
 
-            // Profile listener
             const profileRef = dbRef(database, `profiles/${userId}`);
             profileUnsubscribe = dbOnValue(profileRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -417,7 +408,6 @@
                 }
             });
 
-            // Groups listener
             const groupsRef = dbRef(database, 'groups');
             groupsUnsubscribe = dbOnValue(groupsRef, (snapshot) => {
                 const allGroups = snapshot.val() || {};
@@ -429,7 +419,6 @@
             });
         }
 
-        // Load profile from Firebase
         async function loadProfileFromFirebase() {
             if (!userId) return;
 
@@ -440,7 +429,6 @@
                 if (snapshot.exists()) {
                     window.profileData = snapshot.val();
                 } else {
-                    // Initialize default data
                     window.profileData = {
                         name: 'Người dùng mới',
                         bio: 'Chưa có tiểu sử',
@@ -468,7 +456,6 @@
             }
         }
 
-        // Save profile to Firebase
         async function saveProfileToFirebase() {
             if (!userId || !window.profileData) return false;
 
@@ -484,7 +471,6 @@
             }
         }
 
-        // Notification system (2s auto-hide)
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
@@ -498,18 +484,15 @@
             }, 2000);
         }
 
-        // Loading
         function showLoading(show = true) {
             document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
         }
 
-        // Load profile UI
         function loadProfile() {
             if (!window.profileData) return;
             
             const data = window.profileData;
             
-            // Update header
             if (data.background) {
                 document.getElementById('profileHeader').style.backgroundImage = `url(${data.background})`;
             }
@@ -519,7 +502,6 @@
             document.getElementById('userBio').textContent = data.bio || 'Chưa có tiểu sử';
             document.getElementById('favoriteQuote').value = data.favoriteQuote || '';
             
-            // Update links
             document.getElementById('facebookLink').innerHTML = 
                 data.facebook ? `<a href="${data.facebook}" target="_blank">${data.facebook}</a>` : 'Chưa cập nhật';
             document.getElementById('instagramLink').innerHTML = 
@@ -527,7 +509,6 @@
             document.getElementById('locketLink').innerHTML = 
                 data.locket ? `<a href="${data.locket}" target="_blank">${data.locket}</a>` : 'Chưa cập nhật';
             
-            // Update hobbies
             const hobbiesList = document.getElementById('hobbiesList');
             if (data.hobbies && data.hobbies.length > 0) {
                 hobbiesList.innerHTML = data.hobbies.map(hobby => 
@@ -537,13 +518,11 @@
                 hobbiesList.innerHTML = '<p style="color: #999;">Chưa cập nhật sở thích</p>';
             }
             
-            // Update galleries
             updatePhotoGallery();
             updateGroupGallery();
             updateGroupList();
         }
 
-        // Photo Library functions
         function openPhotoLibrary(purpose) {
             window.currentPhotoPurpose = purpose;
             document.getElementById('photoLibraryModal').style.display = 'block';
@@ -606,7 +585,6 @@
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Calculate new dimensions
                         let width = img.width;
                         let height = img.height;
                         if (width > maxWidth) {
@@ -618,7 +596,6 @@
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Convert to base64 with compression
                         const base64 = canvas.toDataURL('image/jpeg', quality);
                         resolve(base64);
                     };
@@ -857,17 +834,14 @@
             `).join('');
         }
 
-        // Close modals when clicking outside
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', initAuth);
         
-        // Cleanup
         window.addEventListener('beforeunload', () => {
             if (profileUnsubscribe) profileUnsubscribe();
             if (groupsUnsubscribe) groupsUnsubscribe();
