@@ -357,7 +357,29 @@
                 }
             });
         }
-        
+        // Thêm vào phần script của index.html
+import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// Giả sử bạn đã có userId từ localStorage
+const savedUser = localStorage.getItem('currentUser');
+if (savedUser) {
+    const currentUser = JSON.parse(savedUser);
+    const userId = currentUser.memberId;
+    
+    // Lắng nghe thay đổi real-time
+    const profileRef = doc(db, 'profiles', userId);
+    onSnapshot(profileRef, (doc) => {
+        if (doc.exists()) {
+            const data = doc.data();
+            
+            // Cập nhật UI index.html
+            document.getElementById('userName').textContent = data.name;
+            document.getElementById('userAvatar').src = data.avatar || '🐵';
+            document.getElementById('userBio').textContent = data.bio;
+            // ... cập nhật các phần khác
+        }
+    });
+}
         // Tìm kiếm
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
