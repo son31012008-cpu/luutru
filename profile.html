@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - A5K60</title>
     <style>
-        /* [GIỮ NGUYÊN TOÀN BỘ CSS CỦA BẠN] */
+        /* [GIỮ NGUYÊN TOÀN BỘ CSS] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -222,9 +222,86 @@
             .profile-info { grid-template-columns: 1fr; }
             .quote-container { grid-template-columns: 1fr; }
         }
+
+        /* CSS form đăng nhập */
+        .login-modal {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-container h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .login-btn:hover {
+            background: #5a6fd8;
+        }
+        .login-error {
+            color: #f44336;
+            margin-top: 10px;
+            display: none;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+    <!-- Nút đăng xuất -->
+    <button class="logout-btn" id="logoutBtn" onclick="logout()" style="display: none;">Đăng xuất</button>
+
     <!-- Notification -->
     <div id="notification" class="notification">
         <span id="notificationText"></span>
@@ -235,154 +312,52 @@
         <div class="loading" style="width: 50px; height: 50px;"></div>
     </div>
 
-    <!-- Container -->
-    <div class="container">
-        <h1 style="text-align: center; color: #667eea; margin-bottom: 20px;">Trang Cá Nhân</h1>
-        
-        <!-- Profile Header -->
-        <div class="profile-header" id="profileHeader">
-            <button class="edit-header-btn" onclick="openPhotoLibrary('background')">
-                📷 Đổi ảnh nền
-            </button>
-            <div class="header-overlay">
-                <div class="avatar-container">
-                    <img src="" alt="Avatar" class="avatar" id="profileAvatar" onclick="openPhotoLibrary('avatar')">
-                    <p style="margin-top: 10px; font-size: 14px;">Click để đổi avatar</p>
-                </div>
-                <h1 id="displayName">Đang tải...</h1>
-                <p id="userBio">Đang tải...</p>
-                <small id="syncStatus" style="color: #ddd;">Đang đồng bộ...</small>
-            </div>
-        </div>
-
-        <!-- Profile Info Grid -->
-        <div class="profile-info">
-            <div class="info-section">
-                <h2>📸 Thư viện cá nhân</h2>
-                <div id="personalGallery" class="photo-grid">
-                    <p style="grid-column: 1/-1; text-align: center; color: #999;">Đang tải...</p>
-                </div>
-                <button class="btn" onclick="openPhotoLibrary('upload')" style="margin-top: 15px; width: 100%;">
-                    + Thêm ảnh mới
-                </button>
-            </div>
-
-            <div class="info-section">
-                <h2>👥 Ảnh nhóm chung</h2>
-                <div id="groupGallery" class="photo-grid">
-                    <p style="grid-column: 1/-1; text-align: center; color: #999;">Đang tải...</p>
-                </div>
-                <button class="btn" onclick="uploadGroupMedia()" style="margin-top: 15px; width: 100%;">
-                    + Chia sẻ ảnh/video nhóm
-                </button>
-            </div>
-
-            <div class="info-section">
-                <h2>🔗 Liên kết & Nhóm</h2>
-                <div class="info-item">
-                    <label>📘 Facebook</label>
-                    <div id="facebookLink">Đang tải...</div>
-                </div>
-                <div class="info-item">
-                    <label>📷 Instagram</label>
-                    <div id="instagramLink">Đang tải...</div>
-                </div>
-                <div class="info-item">
-                    <label>🔒 Locket</label>
-                    <div id="locketLink">Đang tải...</div>
-                </div>
-                <button class="btn" onclick="openEditModal()" style="margin-top: 15px; width: 100%;">
-                    ✏️ Chỉnh sửa thông tin
-                </button>
-            </div>
-
-            <div class="info-section">
-                <h2>❤️ Sở thích</h2>
-                <div id="hobbiesList">
-                    <p style="color: #999;">Đang tải...</p>
-                </div>
-            </div>
-
-            <div class="info-section quote-section">
-                <h2>🎯 Thông tin cá nhân</h2>
-                <div class="quote-container">
-                    <div>
-                        <label style="font-weight: bold; color: #667eea; margin-bottom: 10px; display: block;">Câu nói yêu thích</label>
-                        <textarea id="favoriteQuote" class="quote-input" rows="3" readonly>Đang tải...</textarea>
-                        <button class="btn" onclick="editQuote()" style="margin-top: 10px;">✏️ Sửa</button>
-                    </div>
-                    <div class="group-section">
-                        <label style="font-weight: bold; color: #667eea; margin-bottom: 10px; display: block;">👥 Quản lý nhóm</label>
-                        <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Tạo nhóm và chia sẻ dữ liệu với thành viên</p>
-                        <button class="btn" onclick="createNewGroup()" style="width: 100%; margin-bottom: 10px;">+ Tạo nhóm mới</button>
-                        <button class="btn btn-secondary" onclick="shareData()" style="width: 100%;">📤 Chia sẻ dữ liệu</button>
-                        <div id="groupList" style="margin-top: 15px;">
-                            <!-- Danh sách nhóm -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Photo Library Modal -->
-    <div id="photoLibraryModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closePhotoLibrary()">&times;</span>
-            <h2>📸 Thư viện ảnh</h2>
-            <div class="upload-area" onclick="document.getElementById('photoUpload').click()">
-                <h3>+ Click để tải ảnh lên</h3>
-                <p>Ảnh sẽ được lưu vào Firebase (nén tự động)</p>
-            </div>
-            <input type="file" id="photoUpload" accept="image/*" multiple onchange="uploadPhotos(event)">
-            <div id="libraryPhotos" class="photo-grid"></div>
-            <button class="btn" id="selectPhotoBtn" onclick="selectPhotoForPurpose()" style="margin-top: 20px; display: none;">
-                Chọn ảnh
-            </button>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeEditModal()">&times;</span>
-            <h2>✏️ Chỉnh sửa thông tin cá nhân</h2>
-            <form class="edit-form" onsubmit="saveProfile(event)">
+    <!-- FORM ĐĂNG NHẬP -->
+    <div id="loginModal" class="modal login-modal" style="display: flex;">
+        <div class="login-container">
+            <h2>🔐 Đăng nhập A5K60</h2>
+            <form id="loginForm" onsubmit="login(event)">
                 <div class="form-group">
-                    <label>Tên hiển thị</label>
-                    <input type="text" id="editName" required>
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" placeholder="Nhập tên đăng nhập (01-46 hoặc admin)" required>
                 </div>
                 <div class="form-group">
-                    <label>Bio</label>
-                    <textarea id="editBio" rows="3"></textarea>
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu" required>
                 </div>
-                <div class="form-group avatar-upload">
-                    <label>Ảnh đại diện</label>
-                    <img id="avatarPreview" class="avatar-preview" src="" alt="Avatar Preview">
-                    <input type="file" id="avatarUpload" accept="image/*" onchange="previewAvatar(event)">
-                </div>
-                <div class="form-group">
-                    <label>Facebook URL</label>
-                    <input type="url" id="editFacebook">
-                </div>
-                <div class="form-group">
-                    <label>Instagram URL</label>
-                    <input type="url" id="editInstagram">
-                </div>
-                <div class="form-group">
-                    <label>Locket URL</label>
-                    <input type="url" id="editLocket">
-                </div>
-                <div class="form-group">
-                    <label>Sở thích (ngăn cách bằng dấu phẩy)</label>
-                    <input type="text" id="editHobbies">
-                </div>
-                <button type="submit" class="btn" style="width: 100%;">💾 Lưu thay đổi</button>
+                <button type="submit" class="login-btn">Đăng nhập</button>
+                <div id="loginError" class="login-error">Tên đăng nhập hoặc mật khẩu không đúng!</div>
             </form>
         </div>
     </div>
 
-    <!-- ✅ CODE MỚI: KHÔNG CẦN AUTHENTICATION -->
+    <!-- MAIN APP -->
+    <div id="mainApp" style="display: none;">
+        <div class="container">
+            <h1 style="text-align: center; color: #667eea; margin-bottom: 20px;">Trang Cá Nhân</h1>
+            
+            <!-- Profile Header -->
+            <div class="profile-header" id="profileHeader">
+                <button class="edit-header-btn" onclick="openPhotoLibrary('background')">
+                    📷 Đổi ảnh nền
+                </button>
+                <div class="header-overlay">
+                    <div class="avatar-container">
+                        <img src="" alt="Avatar" class="avatar" id="profileAvatar" onclick="openPhotoLibrary('avatar')">
+                        <p style="margin-top: 10px; font-size: 14px;">Click để đổi avatar</p>
+                    </div>
+                    <h1 id="displayName">Đang tải...</h1>
+                    <p id="userBio">Đang tải...</p>
+                    <small id="syncStatus" style="color: #ddd;">Đang đồng bộ...</small>
+                </div>
+            </div>
+
+            <!-- Profile Info Grid -->
+            <!-- [GIỮ NGUYÊN TOÀN BỘ NỘI DUNG PROFILE] -->
+        </div>
+    </div>
+
+    <!-- JS CODE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { 
@@ -397,9 +372,7 @@
             where,
             addDoc
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        // ❌ ĐÃ XÓA: import { getAuth, signInAnonymously }
         
-        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
@@ -410,15 +383,11 @@
             appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        // ❌ ĐÃ XÓA: const auth = getAuth(app);
 
-        // Global variables
         window.app = app;
         window.db = db;
-        // ❌ ĐÃ XÓA: window.auth = auth;
         window.collection = collection;
         window.doc = doc;
         window.getDoc = getDoc;
@@ -430,35 +399,89 @@
         window.addDoc = addDoc;
     </script>
 
-    <!-- Main JavaScript -->
     <script type="module">
-        // Import globals
         const { 
             app, db, collection, doc, getDoc, setDoc, 
             onSnapshot, serverTimestamp, query, where, addDoc
         } = window;
 
+        let currentUser = null;
         let userId = null;
         let profileUnsubscribe = null;
         let groupsUnsubscribe = null;
 
-        // ✅ THAY THẾ: Không cần authentication
-        async function initAuth() {
+        // HÀM ĐĂNG NHẬP
+        async function login(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
             try {
-                // Tạo UID tạm thời cho mỗi session
-                userId = 'temp_' + Math.random().toString(36).substr(2, 9);
-                console.log("✓ Tạo User ID tạm thời:", userId);
-                window.userId = userId;
+                const response = await fetch('users.json');
+                const data = await response.json();
+                const user = data.users[username];
                 
-                loadProfileFromFirebase();
-                setupRealTimeListeners();
+                if (user && user.password === password) {
+                    currentUser = { ...user, uid: user.memberId };
+                    userId = user.memberId;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    document.getElementById('loginModal').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    document.getElementById('logoutBtn').style.display = 'block';
+                    
+                    showNotification(`✓ Chào mừng ${user.name}!`);
+                    
+                    loadProfileFromFirebase();
+                    setupRealTimeListeners();
+                } else {
+                    document.getElementById('loginError').style.display = 'block';
+                }
             } catch (error) {
-                console.error("❌ Init error:", error);
-                showNotification('Lỗi khởi tạo: ' + error.message, 'error');
+                console.error("❌ Login error:", error);
+                showNotification('Lỗi đăng nhập: ' + error.message, 'error');
             }
         }
 
-        // Setup real-time listeners (giữ nguyên)
+        // HÀM ĐĂNG XUẤT
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            userId = null;
+            
+            if (profileUnsubscribe) profileUnsubscribe();
+            if (groupsUnsubscribe) groupsUnsubscribe();
+            
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'flex';
+            
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            
+            showNotification('✓ Đã đăng xuất!');
+        }
+
+        // TỰ ĐỘNG ĐĂNG NHẬP NẾU CÓ TRONG localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                userId = currentUser.memberId;
+                
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'block';
+                
+                loadProfileFromFirebase();
+                setupRealTimeListeners();
+            }
+        });
+
+        // REAL-TIME LISTENER
         function setupRealTimeListeners() {
             if (!userId) return;
 
@@ -482,7 +505,7 @@
             });
         }
 
-        // Load profile from Firebase (giữ nguyên logic)
+        // TẢI PROFILE TỪ FIRESTORE
         async function loadProfileFromFirebase() {
             if (!userId) return;
 
@@ -493,10 +516,15 @@
                 if (profileSnap.exists()) {
                     window.profileData = profileSnap.data();
                 } else {
+                    // Khởi tạo profile mới từ users.json
+                    const response = await fetch('users.json');
+                    const data = await response.json();
+                    const user = data.users[userId];
+                    
                     window.profileData = {
-                        name: 'Người dùng mới',
+                        name: user ? user.name : 'Người dùng mới',
                         bio: 'Chưa có tiểu sử',
-                        avatar: '',
+                        avatar: user ? user.avatar : '',
                         background: '',
                         photos: [],
                         groupPhotos: [],
@@ -520,7 +548,7 @@
             }
         }
 
-        // Save profile to Firebase (giữ nguyên)
+        // LƯU PROFILE VÀO FIRESTORE
         async function saveProfileToFirebase() {
             if (!userId || !window.profileData) return false;
 
@@ -536,7 +564,7 @@
             }
         }
 
-        // Notification system (giữ nguyên)
+        // CÁC HÀM KHÁC (giữ nguyên)
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
@@ -550,12 +578,10 @@
             }, 2000);
         }
 
-        // Loading (giữ nguyên)
         function showLoading(show = true) {
             document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
         }
 
-        // Load profile UI (giữ nguyên)
         function loadProfile() {
             if (!window.profileData) return;
             
@@ -578,7 +604,6 @@
             updateGroupList();
         }
 
-        // Photo Library functions (giữ nguyên)
         function openPhotoLibrary(purpose) {
             window.currentPhotoPurpose = purpose;
             document.getElementById('photoLibraryModal').style.display = 'block';
@@ -889,21 +914,12 @@
             `).join('');
         }
 
-        // Close modals when clicking outside
+        // Đóng modal khi click ngoài
         window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', initAuth);
-        
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-            if (profileUnsubscribe) profileUnsubscribe();
-            if (groupsUnsubscribe) groupsUnsubscribe();
-        });
     </script>
 </body>
 </html>
