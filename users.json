@@ -1,0 +1,333 @@
+{
+  "users": {
+    "admin": {
+      "password": "admin123",
+      "role": "admin",
+      "memberId": "admin",
+      "name": "Administrator",
+      "avatar": "👨‍💼"
+    },
+    "01": {
+      "password": "user01",
+      "role": "member",
+      "memberId": "01",
+      "name": "Võ Đăng Hoàng Anh",
+      "avatar": "🐵"
+    },
+    "02": {
+      "password": "user02",
+      "role": "member",
+      "memberId": "02",
+      "name": "Võ Hoàng Anh",
+      "avatar": "🙈"
+    },
+    "03": {
+      "password": "user03",
+      "role": "member",
+      "memberId": "03",
+      "name": "Đinh Viết Dũng",
+      "avatar": "🙉"
+    },
+    "04": {
+      "password": "user04",
+      "role": "member",
+      "memberId": "04",
+      "name": "Lê Thị Thùy Dương",
+      "avatar": "🙊"
+    },
+    "05": {
+      "password": "user05",
+      "role": "member",
+      "memberId": "05",
+      "name": "Nguyễn Hàn Giang",
+      "avatar": "🦍"
+    },
+    "06": {
+      "password": "user06",
+      "role": "member",
+      "memberId": "06",
+      "name": "Nguyễn Thị Diễm Hằng",
+      "avatar": "🐒"
+    },
+    "07": {
+      "password": "user07",
+      "role": "member",
+      "memberId": "07",
+      "name": "Nguyễn Thị Thúy Hằng",
+      "avatar": "🐵"
+    },
+    "08": {
+      "password": "user08",
+      "role": "member",
+      "memberId": "08",
+      "name": "Nguyễn Bảo Hoàng",
+      "avatar": "🙈"
+    },
+    "09": {
+      "password": "user09",
+      "role": "member",
+      "memberId": "09",
+      "name": "Nguyễn Văn Quốc Hội",
+      "avatar": "🙉"
+    },
+    "10": {
+      "password": "user10",
+      "role": "member",
+      "memberId": "10",
+      "name": "Huỳnh Gia Huy",
+      "avatar": "🙊"
+    },
+    "11": {
+      "password": "user11",
+      "role": "member",
+      "memberId": "11",
+      "name": "Trần Huy Hoàng",
+      "avatar": "🦍"
+    },
+    "12": {
+      "password": "user12",
+      "role": "member",
+      "memberId": "12",
+      "name": "Hồ Công Hưng",
+      "avatar": "🐒"
+    },
+    "13": {
+      "password": "user13",
+      "role": "member",
+      "memberId": "13",
+      "name": "Nguyễn Anh Kha",
+      "avatar": "🐵"
+    },
+    "14": {
+      "password": "user14",
+      "role": "member",
+      "memberId": "14",
+      "name": "Lê Quang Khoa",
+      "avatar": "🙈"
+    },
+    "15": {
+      "password": "user15",
+      "role": "member",
+      "memberId": "15",
+      "name": "Nguyễn Anh Khôi",
+      "avatar": "🙉"
+    },
+    "16": {
+      "password": "user16",
+      "role": "member",
+      "memberId": "16",
+      "name": "Mai Đăng Linh",
+      "avatar": "🙊"
+    },
+    "17": {
+      "password": "user17",
+      "role": "member",
+      "memberId": "17",
+      "name": "Nguyễn Hoài Phương Linh",
+      "avatar": "🦍"
+    },
+    "18": {
+      "password": "user18",
+      "role": "member",
+      "memberId": "18",
+      "name": "Nguyễn Thị Khánh Linh",
+      "avatar": "🐒"
+    },
+    "19": {
+      "password": "user19",
+      "role": "member",
+      "memberId": "19",
+      "name": "Nguyễn Thảo Ly",
+      "avatar": "🐵"
+    },
+    "20": {
+      "password": "user20",
+      "role": "member",
+      "memberId": "20",
+      "name": "Nguyễn Ngọc Huy Minh",
+      "avatar": "🙈"
+    },
+    "21": {
+      "password": "user21",
+      "role": "member",
+      "memberId": "21",
+      "name": "Võ Khánh Minh",
+      "avatar": "🙉"
+    },
+    "22": {
+      "password": "user22",
+      "role": "member",
+      "memberId": "22",
+      "name": "Lê Thị Trà My",
+      "avatar": "🙊"
+    },
+    "23": {
+      "password": "user23",
+      "role": "member",
+      "memberId": "23",
+      "name": "Nguyễn Diễm My",
+      "avatar": "🦍"
+    },
+    "24": {
+      "password": "user24",
+      "role": "member",
+      "memberId": "24",
+      "name": "Võ Trần Thục Nghi",
+      "avatar": "🐒"
+    },
+    "25": {
+      "password": "user25",
+      "role": "member",
+      "memberId": "25",
+      "name": "Lê Hữu Nghĩa",
+      "avatar": "🐵"
+    },
+    "26": {
+      "password": "user26",
+      "role": "member",
+      "memberId": "26",
+      "name": "Nguyễn Bích Ngọc",
+      "avatar": "🙈"
+    },
+    "27": {
+      "password": "user27",
+      "role": "member",
+      "memberId": "27",
+      "name": "Trần Thị Thanh Ngọc",
+      "avatar": "🙉"
+    },
+    "28": {
+      "password": "user28",
+      "role": "member",
+      "memberId": "28",
+      "name": "Nguyễn Đăng Nguyên",
+      "avatar": "🙊"
+    },
+    "29": {
+      "password": "user29",
+      "role": "member",
+      "memberId": "29",
+      "name": "Nguyễn Xuân Hoàng Nguyên",
+      "avatar": "🦍"
+    },
+    "30": {
+      "password": "user30",
+      "role": "member",
+      "memberId": "30",
+      "name": "Phạm Hoàng Thảo Nguyên",
+      "avatar": "🐒"
+    },
+    "31": {
+      "password": "user31",
+      "role": "member",
+      "memberId": "31",
+      "name": "Lê Minh Nhật",
+      "avatar": "🐵"
+    },
+    "32": {
+      "password": "user32",
+      "role": "member",
+      "memberId": "32",
+      "name": "Nguyễn Thị Quỳnh Như",
+      "avatar": "🙈"
+    },
+    "33": {
+      "password": "user33",
+      "role": "member",
+      "memberId": "33",
+      "name": "Đặng Thành Phát",
+      "avatar": "🙉"
+    },
+    "34": {
+      "password": "user34",
+      "role": "member",
+      "memberId": "34",
+      "name": "Lê Ngọc Quang",
+      "avatar": "🙊"
+    },
+    "35": {
+      "password": "user35",
+      "role": "member",
+      "memberId": "35",
+      "name": "Trương Nhật Sơn",
+      "avatar": "🦍"
+    },
+    "36": {
+      "password": "user36",
+      "role": "member",
+      "memberId": "36",
+      "name": "Nguyễn Thái Sơn",
+      "avatar": "🐒"
+    },
+    "37": {
+      "password": "user37",
+      "role": "member",
+      "memberId": "37",
+      "name": "Vũ Minh Sơn",
+      "avatar": "🐵"
+    },
+    "38": {
+      "password": "user38",
+      "role": "member",
+      "memberId": "38",
+      "name": "Nguyễn Quang Thanh",
+      "avatar": "🙈"
+    },
+    "39": {
+      "password": "user39",
+      "role": "member",
+      "memberId": "39",
+      "name": "Trần Hương Trà",
+      "avatar": "🙉"
+    },
+    "40": {
+      "password": "user40",
+      "role": "member",
+      "memberId": "40",
+      "name": "Nguyễn Ngọc Thảo Trang",
+      "avatar": "🙊"
+    },
+    "41": {
+      "password": "user41",
+      "role": "member",
+      "memberId": "41",
+      "name": "Trần Ngọc Huyền Trân",
+      "avatar": "🦍"
+    },
+    "42": {
+      "password": "user42",
+      "role": "member",
+      "memberId": "42",
+      "name": "Lê Nguyễn Khánh Triều",
+      "avatar": "🐒"
+    },
+    "43": {
+      "password": "user43",
+      "role": "member",
+      "memberId": "43",
+      "name": "Lê Ngọc Thanh Trúc",
+      "avatar": "🐵"
+    },
+    "44": {
+      "password": "user44",
+      "role": "member",
+      "memberId": "44",
+      "name": "Lê Võ Anh Tuấn",
+      "avatar": "🙈"
+    },
+    "45": {
+      "password": "user45",
+      "role": "member",
+      "memberId": "45",
+      "name": "Lê Thanh Tuyến",
+      "avatar": "🙉"
+    },
+    "46": {
+      "password": "user46",
+      "role": "member",
+      "memberId": "46",
+      "name": "Nguyễn Hà Vy",
+      "avatar": "🙊"
+    }
+  }
+}
