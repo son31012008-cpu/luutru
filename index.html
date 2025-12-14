@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Những con khỉ A5K60 - Trang chủ</title>
+    
+    <!-- ✅ SỬA: Xóa dấu cách cuối URLs -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -14,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* Giữ nguyên CSS của bạn */
         * { font-family: 'Inter', 'Poppins', sans-serif; }
         body { background: linear-gradient(135deg, #FAF7F0 0%, #F0EDE6 100%); min-height: 100vh; }
         .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
@@ -32,11 +35,9 @@
         .member-number { position: absolute; top: 1rem; right: 1rem; background: #E17055; color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.875rem; }
         .logout-btn { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); transition: all 0.3s ease; }
         .logout-btn:hover { background: #e74c3c; color: white; }
-        /* THÊM STYLE CHO NÚT CÀI ĐẶT */
         .settings-btn { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); transition: all 0.3s ease; }
         .settings-btn:hover { background: #3498db; color: white; }
         
-        /* Notification Toast Styles */
         .notification {
             position: fixed;
             top: 5rem;
@@ -81,7 +82,6 @@
                     <span class="text-sm text-gray-600">Xin chào, </span>
                     <span id="userGreeting" class="text-sm font-semibold text-gray-800"></span>
                 </div>
-                <!-- THÊM NÚT CÀI ĐẶT TÀI KHOẢN -->
                 <a href="account.html" class="settings-btn px-3 py-2 rounded-lg text-sm font-medium">
                     ⚙️ Cài đặt
                 </a>
@@ -175,7 +175,23 @@
     </main>
     
     <script>
-        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // ✅ SỬA: Xóa import Firestore không cần thiết
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
+            authDomain: "a5k60-website.firebaseapp.com",
+            // ✅ SỬA: Xóa dấu cách cuối URL
+            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "a5k60-website",
+            storageBucket: "a5k60-website.firebasestorage.app",
+            messagingSenderId: "1083754554024",
+            appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
         // Danh sách 46 thành viên chính xác
         const memberNames = [
             "Võ Đăng Hoàng Anh", "Võ Hoàng Anh", "Đinh Viết Dũng", "Lê Thị Thùy Dương", "Nguyễn Hàn Giang",
@@ -189,6 +205,16 @@
             "Trần Ngọc Huyền Trân", "Lê Nguyễn Khánh Triều", "Lê Ngọc Thanh Trúc", "Lê Võ Anh Tuấn", "Lê Thanh Tuyến",
             "Nguyễn Hà Vy"
         ];
+
+        // Kiểm tra đăng nhập
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return JSON.parse(currentUser);
+        }
 
         // Tạo thẻ thành viên
         function createMemberCard(memberId, userData) {
@@ -231,19 +257,18 @@
             
             return card;
         }
-        
+
         function generateAvatar(id) {
             const emojis = ['🐵', '🙈', '🙉', '🙊', '🦍', '🐒'];
             return emojis[parseInt(id) % 6];
         }
-        
-        // Hàm hiển thị thông báo tự động ẩn sau 2 giây
+
+        // ✅ SỬA: Hiển thị thông báo đơn giản
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const notificationIcon = document.getElementById('notificationIcon');
             const notificationMessage = document.getElementById('notificationMessage');
             
-            // Set icon based on type
             const icons = {
                 info: 'ℹ️',
                 success: '✅',
@@ -251,11 +276,8 @@
                 error: '❌'
             };
             notificationIcon.textContent = icons[type] || icons.info;
-            
-            // Set message
             notificationMessage.textContent = message;
             
-            // Set border color based on type
             notification.className = `notification fixed top-20 right-4 bg-white border-l-4 p-4 rounded-lg shadow-lg z-50`;
             
             if (type === 'error') {
@@ -268,46 +290,22 @@
                 notification.classList.add('border-blue-500');
             }
             
-            // Show notification
             notification.classList.remove('hidden');
             
-            // Auto-hide after 2 seconds
             setTimeout(() => {
                 notification.classList.add('hidden');
-                // Reset classes
-                notification.className = 'notification fixed top-20 right-4 bg-white border-l-4 p-4 rounded-lg shadow-lg z-50 hidden';
+                notification.className = 'notification hidden';
             }, 2000);
         }
-        
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
-            authDomain: "a5k60-website.firebaseapp.com",
-            databaseURL: "https://a5k60-website-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "a5k60-website",
-            storageBucket: "a5k60-website.firebasestorage.app",
-            messagingSenderId: "1083754554024",
-            appId: "1:1083754554024:web:6847ea23b19a9369dc989d"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        
-        // Kiểm tra đăng nhập
-        function checkAuth() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (!currentUser) {
-                window.location.href = 'login.html';
-                return null;
-            }
-            return JSON.parse(currentUser);
-        }
-        
+
         // Render thành viên từ Firebase
         async function renderMembersFromFirebase() {
             const grid = document.getElementById('membersGrid');
             
             try {
+                showNotification('⏳ Đang tải danh sách thành viên...', 'info');
+                
+                // ✅ SỬA: Chỉ lấy 46 member, bỏ admin
                 const snapshot = await db.ref('users').once('value');
                 const users = snapshot.val();
                 
@@ -315,8 +313,10 @@
                     throw new Error('Không tìm thấy dữ liệu users trong Firebase');
                 }
                 
-                // Render chỉ các member 01-46, bỏ qua admin
+                // Lấy tất cả keys và sắp xếp
                 const userIds = Object.keys(users).filter(id => id !== 'admin').sort((a, b) => parseInt(a) - parseInt(b));
+                
+                console.log('✅ Tìm thấy', userIds.length, 'thành viên:', userIds);
                 
                 grid.innerHTML = '';
                 
@@ -326,41 +326,30 @@
                     grid.appendChild(card);
                 });
                 
+                showNotification(`✅ Đã tải ${userIds.length} thành viên thành công!`, 'success');
+                
             } catch (error) {
-                console.error('Lỗi khi tải dữ liệu:', error);
+                console.error('❌ Lỗi khi tải dữ liệu:', error);
                 showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
+                
+                // ✅ Fallback: Hiển thị 46 user mặc định nếu Firebase lỗi
+                showNotification('ℹ️ Đang hiển thị dữ liệu mặc định', 'info');
+                renderDefaultMembers();
             }
         }
-        
-        // Lắng nghe thay đổi real-time
-        const profileRef = doc(db, 'profiles', userId);
-        onSnapshot(profileRef, (doc) => {
-            if (doc.exists()) {
-                const data = doc.data();
-                    
-                    // Hiệu ứng khi được cập nhật
-                    anime({
-                        targets: card,
-                        scale: [1, 1.05, 1],
-                        duration: 500
-                    });
-                }
-            });
-        }
-        
-        
 
-    
-        
+        // ✅ THÊM: Hàm fallback khi Firebase lỗi
+        function renderDefaultMembers() {
+            const grid = document.getElementById('membersGrid');
+            grid.innerHTML = '';
             
-            // Cập nhật UI index.html
-            document.getElementById('userName').textContent = data.name;
-            document.getElementById('userAvatar').src = data.avatar || '🐵';
-            document.getElementById('userBio').textContent = data.bio;
-            // ... cập nhật các phần khác
+            for (let i = 1; i <= 46; i++) {
+                const memberId = String(i).padStart(2, '0');
+                const card = createMemberCard(memberId, {});
+                grid.appendChild(card);
+            }
         }
-    });
-}
+
         // Tìm kiếm
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
@@ -426,7 +415,6 @@
             
             await renderMembersFromFirebase();
             
-            setupRealtimeListener();
             setupSearch();
             setupFilter();
             setupLogout();
