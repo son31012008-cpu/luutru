@@ -382,27 +382,8 @@
         </div>
     </div>
 
-    <!-- ❌ CODE CŨ CÓ LỖI -->
-    <!-- 
+    <!-- ✅ CODE MỚI: KHÔNG CẦN AUTHENTICATION -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js ";
-        import { getFirestore, collection, doc, getDoc, setDoc, onSnapshot, serverTimestamp, query, where, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js ";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js ";
-        
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-    </script>
-    -->
-
-    <!-- ✅ CODE MỚI ĐÃ SỬA -->
-    <script type="module">
-        // ✅ SỬA LỖI: Xóa dấu cách cuối URL
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { 
             getFirestore, 
@@ -416,12 +397,9 @@
             where,
             addDoc
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import {
-            getAuth,
-            signInAnonymously
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        // ❌ ĐÃ XÓA: import { getAuth, signInAnonymously }
         
-        // ✅ THAY BẰNG CONFIG THỰC TẾ TỪ FIREBASE CỦA BẠN
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyAbD9ave4WUPk9MndVZ7_3_f5XyhNVepEY",
             authDomain: "a5k60-website.firebaseapp.com",
@@ -435,12 +413,12 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);
+        // ❌ ĐÃ XÓA: const auth = getAuth(app);
 
         // Global variables
         window.app = app;
         window.db = db;
-        window.auth = auth;
+        // ❌ ĐÃ XÓA: window.auth = auth;
         window.collection = collection;
         window.doc = doc;
         window.getDoc = getDoc;
@@ -456,7 +434,7 @@
     <script type="module">
         // Import globals
         const { 
-            app, db, auth, collection, doc, getDoc, setDoc, 
+            app, db, collection, doc, getDoc, setDoc, 
             onSnapshot, serverTimestamp, query, where, addDoc
         } = window;
 
@@ -464,32 +442,26 @@
         let profileUnsubscribe = null;
         let groupsUnsubscribe = null;
 
-        // Initialize authentication
+        // ✅ THAY THẾ: Không cần authentication
         async function initAuth() {
             try {
-                if (auth.currentUser) {
-                    userId = auth.currentUser.uid;
-                } else {
-                    // ✅ ĐÚNG: signInAnonymously(auth) - có tham số auth
-                    const userCredential = await signInAnonymously(auth);
-                    userId = userCredential.user.uid;
-                }
-                console.log("✓ User ID:", userId);
+                // Tạo UID tạm thời cho mỗi session
+                userId = 'temp_' + Math.random().toString(36).substr(2, 9);
+                console.log("✓ Tạo User ID tạm thời:", userId);
                 window.userId = userId;
                 
                 loadProfileFromFirebase();
                 setupRealTimeListeners();
             } catch (error) {
-                console.error("❌ Auth error:", error);
-                showNotification('Lỗi xác thực: ' + error.message, 'error');
+                console.error("❌ Init error:", error);
+                showNotification('Lỗi khởi tạo: ' + error.message, 'error');
             }
         }
 
-        // Setup real-time listeners
+        // Setup real-time listeners (giữ nguyên)
         function setupRealTimeListeners() {
             if (!userId) return;
 
-            // Profile listener
             const profileRef = doc(db, 'profiles', userId);
             profileUnsubscribe = onSnapshot(profileRef, (doc) => {
                 if (doc.exists()) {
@@ -499,7 +471,6 @@
                 }
             });
 
-            // Groups listener
             const groupsRef = collection(db, 'groups');
             const userGroupsQuery = query(groupsRef, where('members', 'array-contains', userId));
             groupsUnsubscribe = onSnapshot(userGroupsQuery, (snapshot) => {
@@ -511,7 +482,7 @@
             });
         }
 
-        // Load profile from Firebase
+        // Load profile from Firebase (giữ nguyên logic)
         async function loadProfileFromFirebase() {
             if (!userId) return;
 
@@ -522,7 +493,6 @@
                 if (profileSnap.exists()) {
                     window.profileData = profileSnap.data();
                 } else {
-                    // Initialize default data
                     window.profileData = {
                         name: 'Người dùng mới',
                         bio: 'Chưa có tiểu sử',
@@ -550,7 +520,7 @@
             }
         }
 
-        // Save profile to Firebase
+        // Save profile to Firebase (giữ nguyên)
         async function saveProfileToFirebase() {
             if (!userId || !window.profileData) return false;
 
@@ -566,7 +536,7 @@
             }
         }
 
-        // Notification system (2s auto-hide)
+        // Notification system (giữ nguyên)
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
@@ -580,18 +550,17 @@
             }, 2000);
         }
 
-        // Loading
+        // Loading (giữ nguyên)
         function showLoading(show = true) {
             document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
         }
 
-        // Load profile UI
+        // Load profile UI (giữ nguyên)
         function loadProfile() {
             if (!window.profileData) return;
             
             const data = window.profileData;
             
-            // Update header
             if (data.background) {
                 document.getElementById('profileHeader').style.backgroundImage = `url(${data.background})`;
             }
@@ -601,16 +570,15 @@
             document.getElementById('userBio').textContent = data.bio || 'Chưa có tiểu sử';
             document.getElementById('favoriteQuote').value = data.favoriteQuote || '';
             
-            // Update links
             document.getElementById('facebookLink').innerHTML = 
                 data.facebook ? `<a href="${data.facebook}" target="_blank">${data.facebook}</a>` : 'Chưa cập nhật';
             
-            // Update galleries
             updatePhotoGallery();
             updateGroupGallery();
             updateGroupList();
         }
 
+        // Photo Library functions (giữ nguyên)
         function openPhotoLibrary(purpose) {
             window.currentPhotoPurpose = purpose;
             document.getElementById('photoLibraryModal').style.display = 'block';
