@@ -386,6 +386,7 @@
 
     <!-- Firebase -->
     <script type="module">
+        // ✅ SỬA: Xóa dấu cách cuối URL
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { 
             getFirestore, 
@@ -465,8 +466,14 @@
             if (data.background) {
                 document.getElementById('profileHeader').style.backgroundImage = `url(${data.background})`;
             }
-            document.getElementById('profileAvatar').src = data.avatar || 
-                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI2MCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjYwIiB5PSI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNjY2Ij7wn5OOPC90ZXh0Pjwvc3ZnPg==';
+            
+            // ✅ SỬA: Kiểm tra emoji trong avatar
+            let avatarSrc = data.avatar || generateDefaultAvatar(userId);
+            if (isEmoji(avatarSrc)) {
+                avatarSrc = generateDefaultAvatar(userId);
+            }
+            
+            document.getElementById('profileAvatar').src = avatarSrc;
             document.getElementById('displayName').textContent = data.name || 'Chưa có tên';
             document.getElementById('userBio').textContent = data.bio || 'Chưa có tiểu sử';
             document.getElementById('favoriteQuote').value = data.favoriteQuote || '';
@@ -680,7 +687,7 @@
             document.getElementById('editInstagram').value = data.instagram || '';
             document.getElementById('editLocket').value = data.locket || '';
             document.getElementById('editHobbies').value = data.hobbies ? data.hobbies.join(', ') : '';
-            document.getElementById('avatarPreview').src = data.avatar || '';
+            document.getElementById('avatarPreview').src = data.avatar || generateDefaultAvatar(userId);
             document.getElementById('editModal').style.display = 'block';
         }
 
@@ -697,6 +704,17 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        function generateDefaultAvatar(id) {
+            const emojis = ['🐵', '🙈', '🙉', '🙊', '🦍', '🐒'];
+            return emojis[parseInt(id) % 6];
+        }
+
+        function isEmoji(str) {
+            if (!str) return false;
+            const emojiRegex = /[\u{1F300}-\u{1FAFF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u;
+            return emojiRegex.test(str);
         }
 
         async function saveProfile(event) {
@@ -787,96 +805,6 @@
             if (index >= 0 && index < window.profileData.groups.length) {
                 showNotification(`✓ Đã chia sẻ với nhóm: ${window.profileData.groups[index].name}`);
             }
-        }
-
-        async function loadProfileFromFirebase() {
-            if (!userId) return;
-
-            try {
-                const profileRef = doc(db, 'profiles', userId);
-                const profileSnap = await getDoc(profileRef);
-                
-                if (profileSnap.exists()) {
-                    window.profileData = profileSnap.data();
-                } else {
-                    const response = await fetch('users.json');
-                    const data = await response.json();
-                    const user = data.users[userId];
-                    
-                    window.profileData = {
-                        name: user ? user.name : 'Người dùng mới',
-                        bio: 'Chưa có tiểu sử',
-                        avatar: user ? user.avatar : '',
-                        background: '',
-                        photos: [],
-                        groupPhotos: [],
-                        facebook: '',
-                        instagram: '',
-                        locket: '',
-                        hobbies: [],
-                        favoriteQuote: '"Life is what happens when you\'re busy making other plans."',
-                        groups: [],
-                        createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp()
-                    };
-                    await setDoc(profileRef, window.profileData);
-                }
-                
-                loadProfile();
-            } catch (error) {
-                console.error("❌ Load profile error:", error);
-                showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
-                document.getElementById('syncStatus').textContent = '✗ Lỗi đồng bộ';
-            }
-        }
-
-        function setupRealTimeListeners() {
-            if (!userId) return;
-
-            const profileRef = doc(db, 'profiles', userId);
-            profileUnsubscribe = onSnapshot(profileRef, (doc) => {
-                if (doc.exists()) {
-                    window.profileData = doc.data();
-                    loadProfile();
-                    document.getElementById('syncStatus').textContent = '✓ Đồng bộ thành công';
-                }
-            });
-
-            const groupsRef = collection(db, 'groups');
-            const userGroupsQuery = query(groupsRef, where('members', 'array-contains', userId));
-            groupsUnsubscribe = onSnapshot(userGroupsQuery, (snapshot) => {
-                window.profileData.groups = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                updateGroupList();
-            });
-        }
-
-        async function saveProfileToFirebase() {
-            if (!userId || !window.profileData) return false;
-
-            try {
-                window.profileData.updatedAt = serverTimestamp();
-                const profileRef = doc(db, 'profiles', userId);
-                await setDoc(profileRef, window.profileData, { merge: true });
-                return true;
-            } catch (error) {
-                console.error("❌ Save profile error:", error);
-                showNotification('Lỗi lưu dữ liệu: ' + error.message, 'error');
-                return false;
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            userId = null;
-            
-            if (profileUnsubscribe) profileUnsubscribe();
-            if (groupsUnsubscribe) groupsUnsubscribe();
-            
-            window.location.href = 'index.html';
         }
 
         // ✅ CUỐI CÙNG: GỌI KHI DOM ĐÃ SẴN SÀNG
