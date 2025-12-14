@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - A5K60</title>
     <style>
-        /* CSS giữ nguyên như code cũ của bạn */
+        /* [GIỮ NGUYÊN TOÀN BỘ CSS CỦA BẠN] */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -438,7 +438,8 @@
         let profileUnsubscribe = null;
         let groupsUnsubscribe = null;
 
-        // ✅ KHAI BÁO HÀM TRƯỚC KHI GỌI
+        // ✅ KHAI BÁO TẤT CẢ HÀM TRƯỚC
+
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
@@ -622,7 +623,6 @@
             `).join('');
         }
 
-        // ✅ KHAI BÁO HÀM updateGroupList TRƯỚC KHI GỌI
         function updateGroupList() {
             const groupList = document.getElementById('groupList');
             const groups = window.profileData?.groups || [];
@@ -789,14 +789,97 @@
             }
         }
 
-        // Đóng modal khi click ngoài
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+        async function loadProfileFromFirebase() {
+            if (!userId) return;
+
+            try {
+                const profileRef = doc(db, 'profiles', userId);
+                const profileSnap = await getDoc(profileRef);
+                
+                if (profileSnap.exists()) {
+                    window.profileData = profileSnap.data();
+                } else {
+                    const response = await fetch('users.json');
+                    const data = await response.json();
+                    const user = data.users[userId];
+                    
+                    window.profileData = {
+                        name: user ? user.name : 'Người dùng mới',
+                        bio: 'Chưa có tiểu sử',
+                        avatar: user ? user.avatar : '',
+                        background: '',
+                        photos: [],
+                        groupPhotos: [],
+                        facebook: '',
+                        instagram: '',
+                        locket: '',
+                        hobbies: [],
+                        favoriteQuote: '"Life is what happens when you\'re busy making other plans."',
+                        groups: [],
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    };
+                    await setDoc(profileRef, window.profileData);
+                }
+                
+                loadProfile();
+            } catch (error) {
+                console.error("❌ Load profile error:", error);
+                showNotification('Lỗi tải dữ liệu: ' + error.message, 'error');
+                document.getElementById('syncStatus').textContent = '✗ Lỗi đồng bộ';
             }
         }
 
-        // ✅ GỌI HÀM SAU KHI ĐÃ KHAI BÁO
+        function setupRealTimeListeners() {
+            if (!userId) return;
+
+            const profileRef = doc(db, 'profiles', userId);
+            profileUnsubscribe = onSnapshot(profileRef, (doc) => {
+                if (doc.exists()) {
+                    window.profileData = doc.data();
+                    loadProfile();
+                    document.getElementById('syncStatus').textContent = '✓ Đồng bộ thành công';
+                }
+            });
+
+            const groupsRef = collection(db, 'groups');
+            const userGroupsQuery = query(groupsRef, where('members', 'array-contains', userId));
+            groupsUnsubscribe = onSnapshot(userGroupsQuery, (snapshot) => {
+                window.profileData.groups = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                updateGroupList();
+            });
+        }
+
+        async function saveProfileToFirebase() {
+            if (!userId || !window.profileData) return false;
+
+            try {
+                window.profileData.updatedAt = serverTimestamp();
+                const profileRef = doc(db, 'profiles', userId);
+                await setDoc(profileRef, window.profileData, { merge: true });
+                return true;
+            } catch (error) {
+                console.error("❌ Save profile error:", error);
+                showNotification('Lỗi lưu dữ liệu: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            userId = null;
+            
+            if (profileUnsubscribe) profileUnsubscribe();
+            if (groupsUnsubscribe) groupsUnsubscribe();
+            
+            window.location.href = 'index.html';
+        }
+
+        // ✅ CUỐI CÙNG: GỌI KHI DOM ĐÃ SẴN SÀNG
         document.addEventListener('DOMContentLoaded', async () => {
             const savedUser = localStorage.getItem('currentUser');
             if (!savedUser) {
