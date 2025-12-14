@@ -175,6 +175,7 @@
     </main>
     
     <script>
+        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         // Danh sách 46 thành viên chính xác
         const memberNames = [
             "Võ Đăng Hoàng Anh", "Võ Hoàng Anh", "Đinh Viết Dũng", "Lê Thị Thùy Dương", "Nguyễn Hàn Giang",
@@ -332,21 +333,10 @@
         }
         
         // Lắng nghe thay đổi real-time
-        function setupRealtimeListener() {
-            db.ref('users').on('child_changed', snapshot => {
-                const memberId = snapshot.key;
-                const data = snapshot.val();
-                
-                if (memberId === 'admin') return;
-                
-                const card = document.querySelector(`[data-member-id="${memberId}"]`);
-                
-                if (card) {
-                    const nameEl = card.querySelector('h3');
-                    const avatarEl = card.querySelector('.member-avatar');
-                    
-                    nameEl.textContent = data.name || memberNames[parseInt(memberId) - 1];
-                    avatarEl.textContent = data.avatar || generateAvatar(memberId);
+        const profileRef = doc(db, 'profiles', userId);
+        onSnapshot(profileRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
                     
                     // Hiệu ứng khi được cập nhật
                     anime({
@@ -357,20 +347,11 @@
                 }
             });
         }
-        // Thêm vào phần script của index.html
-import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        
 
-// Giả sử bạn đã có userId từ localStorage
-const savedUser = localStorage.getItem('currentUser');
-if (savedUser) {
-    const currentUser = JSON.parse(savedUser);
-    const userId = currentUser.memberId;
     
-    // Lắng nghe thay đổi real-time
-    const profileRef = doc(db, 'profiles', userId);
-    onSnapshot(profileRef, (doc) => {
-        if (doc.exists()) {
-            const data = doc.data();
+        
             
             // Cập nhật UI index.html
             document.getElementById('userName').textContent = data.name;
